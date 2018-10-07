@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"fmt"
+	"github.com/MegaShow/goagenda/controller"
 
 	"github.com/spf13/cobra"
 )
@@ -13,11 +13,16 @@ var registerCmd = &cobra.Command{
 	Short:   "Register an account",
 	Long: `Register an account with username and password necessarily,
 and with email and telephone optionally.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("register called")
-	},
+	Run: controller.GetRegisterCtrl().Register,
 }
 
 func init() {
 	rootCmd.AddCommand(registerCmd)
+
+	registerCmd.Flags().StringP("user", "u", "", "username of your new account")
+	registerCmd.Flags().StringP("password", "p", "", "password of your new account")
+	registerCmd.Flags().StringP("email", "e", "", "email of your new account")
+	registerCmd.Flags().StringP("telephone", "t", "", "telephone of your new account")
+
+	controller.GetRegisterCtrl().Ctx.BindPFlags(registerCmd.Flags())
 }
