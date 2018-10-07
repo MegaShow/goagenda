@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"github.com/MegaShow/goagenda/controller"
-
 	"github.com/spf13/cobra"
 )
 

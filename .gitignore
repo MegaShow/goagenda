@@ -13,3 +13,9 @@
 
 # GoLand
 .idea/
+
+# Log file
+agenda.Log
+
+# Database
+data/

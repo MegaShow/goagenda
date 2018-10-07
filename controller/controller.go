@@ -1,6 +1,11 @@
 package controller
 
-import "github.com/spf13/viper"
+import (
+	"github.com/MegaShow/goagenda/lib/log"
+	"github.com/MegaShow/goagenda/model"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+)
 
 type Controller struct {
 	Ctx *viper.Viper
@@ -8,6 +13,11 @@ type Controller struct {
 
 type LoginCtrl Controller
 type RegisterCtrl Controller
+
+func CtrlRelease(cmd *cobra.Command, args []string) {
+	log.Release()
+	model.ReleaseUserModel()
+}
 
 func initController(ctrl *Controller) *Controller {
 	if ctrl.Ctx == nil {

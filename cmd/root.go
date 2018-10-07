@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/MegaShow/goagenda/controller"
+	"github.com/MegaShow/goagenda/lib/log"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -9,6 +11,7 @@ import (
 )
 
 var cfgFile string
+var verbose bool
 
 // rootCmd represents the base command when called without any sub-commands
 var rootCmd = &cobra.Command{
@@ -18,6 +21,7 @@ var rootCmd = &cobra.Command{
 This application is a perfect and essential tool
 to be well organized in your work.`,
 	Run: func(cmd *cobra.Command, args []string) { cmd.Usage() },
+	PersistentPostRun: controller.CtrlRelease,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -30,12 +34,13 @@ func Execute() {
 }
 
 func init() {
-	cobra.OnInitialize(initConfig)
+	cobra.OnInitialize(initConfig, initVerbose)
 
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "config file (default is $HOME/.agenda.yaml)")
+	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "display the verbose information")
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -64,4 +69,8 @@ func initConfig() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+}
+
+func initVerbose() {
+	log.SetVerbose(verbose)
 }

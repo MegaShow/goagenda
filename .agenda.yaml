@@ -1,1 +1,6 @@
 LogFile: log.txt
+Database:
+  Path: data
+  UserFile: user.json
+  MeetingFile: meeting.json
+

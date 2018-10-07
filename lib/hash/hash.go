@@ -28,6 +28,10 @@ func Encrypt(password string) (data, salt string) {
 	return
 }
 
+func EncryptWithSalt(password, salt string) string {
+	return hash256(hash256(password) + salt)
+}
+
 func init() {
 	rand.Seed(time.Now().UnixNano())
 }
