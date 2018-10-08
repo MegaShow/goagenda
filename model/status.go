@@ -9,7 +9,7 @@ type Status struct {
 	Name string `json:"user"`
 }
 
-var StatusModel = StatusDB{ Database: Database{ schema: "Status" } }
+var StatusModel = StatusDB{Database: Database{schema: "Status"}}
 
 func (m *StatusDB) GetStatus() Status {
 	initStatusModel()
@@ -29,4 +29,3 @@ func initStatusModel() {
 func ReleaseStatusModel() {
 	StatusModel.releaseModel(&StatusModel.Data)
 }
-

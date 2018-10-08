@@ -5,7 +5,7 @@ import (
 )
 
 type UserDB struct {
-	Data   []User
+	Data []User
 	Database
 }
 
@@ -17,7 +17,7 @@ type User struct {
 	Salt      string `json:"salt"`
 }
 
-var UserModel = UserDB{  Database: Database{ schema: "User" } }
+var UserModel = UserDB{Database: Database{schema: "User"}}
 
 func (m *UserDB) GetUserByName(name string) User {
 	initUserModel()

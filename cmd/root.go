@@ -20,7 +20,7 @@ var rootCmd = &cobra.Command{
 	Long: `Agenda is a meetings management system.
 This application is a perfect and essential tool
 to be well organized in your work.`,
-	Run: func(cmd *cobra.Command, args []string) { cmd.Usage() },
+	Run:               func(cmd *cobra.Command, args []string) { cmd.Usage() },
 	PersistentPostRun: controller.CtrlRelease,
 }
 
