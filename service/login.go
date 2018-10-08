@@ -17,6 +17,13 @@ func Login(name, password string) error {
 	if checkPassword != user.Password {
 		return errors.New("invalid user name or password")
 	}
-	// TODO
+	log.Verbose("check status")
+	status := model.StatusModel.GetStatus()
+	if status.Name == user.Name {
+		return errors.New("you are already logged in with this account")
+	} else if status.Name != "" {
+		return errors.New("you are already logged in with user '"+status.Name+"', please logout first")
+	}
+	model.StatusModel.SetStatus(model.Status{ Name: user.Name })
 	return nil
 }

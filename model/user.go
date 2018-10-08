@@ -1,20 +1,12 @@
 package model
 
 import (
-	"encoding/json"
-	"fmt"
-	"github.com/spf13/viper"
-	"io"
-	"os"
 	"strings"
 )
 
 type UserDB struct {
 	Data   []User
-	isInit bool
-	isDirty bool
-	path string
-	file string
+	Database
 }
 
 type User struct {
@@ -25,7 +17,7 @@ type User struct {
 	Salt      string `json:"salt"`
 }
 
-var UserModel UserDB
+var UserModel = UserDB{  Database: Database{ schema: "User" } }
 
 func (m *UserDB) GetUserByName(name string) User {
 	initUserModel()
@@ -44,46 +36,9 @@ func (m *UserDB) AddUser(user User) {
 }
 
 func initUserModel() {
-	if UserModel.isInit == false {
-		UserModel.path = viper.GetString("Database.Path")
-		UserModel.file = viper.GetString("Database.UserFile")
-		if _, err := os.Stat(UserModel.path); err != nil {
-			err := os.MkdirAll(UserModel.path, 0777)
-			if err != nil {
-				fmt.Println(err)
-				os.Exit(2)
-			}
-		}
-		f, err := os.OpenFile(UserModel.path + string(os.PathSeparator) + UserModel.file, os.O_CREATE|os.O_RDONLY, 0666)
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(2)
-		}
-		defer f.Close()
-		decoder := json.NewDecoder(f)
-		err = decoder.Decode(&UserModel.Data)
-		if err != nil && err != io.EOF {
-			fmt.Println(err)
-			os.Exit(2)
-		}
-		UserModel.isInit = true
-	}
+	UserModel.initModel(&UserModel.Data)
 }
 
 func ReleaseUserModel() {
-	if UserModel.isDirty == true {
-		f, err := os.OpenFile(UserModel.path + string(os.PathSeparator) + UserModel.file, os.O_CREATE|os.O_WRONLY, 0666)
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(2)
-		}
-		defer f.Close()
-		encoder := json.NewEncoder(f)
-		err = encoder.Encode(UserModel.Data)
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(2)
-		}
-		UserModel.isDirty = false
-	}
+	UserModel.releaseModel(&UserModel.Data)
 }

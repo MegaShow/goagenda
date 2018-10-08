@@ -3,4 +3,4 @@ Database:
   Path: data
   UserFile: user.json
   MeetingFile: meeting.json
-
+  StatusFile: status.json

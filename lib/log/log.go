@@ -17,6 +17,11 @@ func Verbose(msg string) {
 	}
 }
 
+// log info message, this won't store in log file
+func Show(msg string) {
+	fmt.Println("[SHOW] " + msg)
+}
+
 // log info message
 func Info(msg string) {
 	fmt.Println("[INFO] " + msg)
