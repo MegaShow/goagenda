@@ -12,6 +12,7 @@ import (
 
 var cfgFile string
 var verbose bool
+var label bool
 
 // rootCmd represents the base command when called without any sub-commands
 var rootCmd = &cobra.Command{
@@ -34,13 +35,14 @@ func Execute() {
 }
 
 func init() {
-	cobra.OnInitialize(initConfig, initVerbose)
+	cobra.OnInitialize(initConfig, initLog)
 
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "config file (default is $HOME/.agenda.yaml)")
 	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "display the verbose information")
+	rootCmd.PersistentFlags().BoolVarP(&label, "label", "l", false, "display the label")
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -71,6 +73,7 @@ func initConfig() {
 	}
 }
 
-func initVerbose() {
+func initLog() {
 	log.SetVerbose(verbose)
+	log.SetLabel(label)
 }

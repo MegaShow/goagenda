@@ -7,15 +7,22 @@ import (
 	"github.com/MegaShow/goagenda/model"
 )
 
-func Register(name, password, email, telephone string) error {
+type AdminService interface {
+	GetCurrentUserName() string
+	Login(name, password string) error
+	Register(name, password, email, telephone string) error
+	SetCurrentUserName(name string) error
+}
+
+func (s *Service) Register(name, password, email, telephone string) error {
 	log.Verbose("check if username exists")
-	user := model.UserModel.GetUserByName(name)
+	user := s.DB.User().GetUserByName(name)
 	if user.Name != "" {
 		return errors.New("user name already exists")
 	}
 	log.Verbose("add new user into database")
 	password, salt := hash.Encrypt(password)
-	model.UserModel.AddUser(model.User{
+	s.DB.User().AddUser(model.User{
 		Name:      name,
 		Email:     email,
 		Telephone: telephone,
@@ -25,9 +32,9 @@ func Register(name, password, email, telephone string) error {
 	return nil
 }
 
-func Login(name, password string) error {
+func (s *Service) Login(name, password string) error {
 	log.Verbose("check if username and password is correct")
-	user := model.UserModel.GetUserByName(name)
+	user := s.DB.User().GetUserByName(name)
 	if user.Name == "" {
 		return errors.New("invalid username or password")
 	}
@@ -36,7 +43,7 @@ func Login(name, password string) error {
 		return errors.New("invalid user name or password")
 	}
 	log.Verbose("check status")
-	status := model.StatusModel.GetStatus()
+	status := s.DB.Status().GetStatus()
 	if status.Name == user.Name {
 		return errors.New("you are already logged in with this account")
 	} else if status.Name != "" {
@@ -45,10 +52,15 @@ func Login(name, password string) error {
 	return nil
 }
 
-func GetCurrentUserName() string {
-	return model.StatusModel.GetStatus().Name
+func (s *Service) GetCurrentUserName() string {
+	return s.DB.Status().GetStatus().Name
 }
 
-func SetCurrentUserName(name string) {
-	model.StatusModel.SetStatus(model.Status{Name: name})
+func (s *Service) SetCurrentUserName(name string) error {
+	s.DB.Status().SetStatus(model.Status{Name: name})
+	return nil
+}
+
+func (s *Manager) Admin() AdminService {
+	return s.GetService()
 }

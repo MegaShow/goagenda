@@ -11,8 +11,7 @@ var registerCmd = &cobra.Command{
 	Short:   "Register an account",
 	Long: `Register an account with username and password necessarily,
 and with email and telephone optionally.`,
-	PreRun: adminPreRun,
-	Run:    controller.GetAdminCtrl().Register,
+	Run:    wrapper(controller.GetAdminCtrl().Register),
 }
 
 var loginCmd = &cobra.Command{
@@ -20,16 +19,14 @@ var loginCmd = &cobra.Command{
 	Aliases: []string{"l"},
 	Short:   "Log in agenda",
 	Long:    "Log in agenda with username and password.",
-	PreRun:  adminPreRun,
-	Run:     controller.GetAdminCtrl().Login,
+	Run:     wrapper(controller.GetAdminCtrl().Login),
 }
 
 var logoutCmd = &cobra.Command{
 	Use:    "logout",
 	Short:  "Log out agenda",
 	Long:   "Log out agenda.",
-	PreRun: adminPreRun,
-	Run:    controller.GetAdminCtrl().Logout,
+	Run:    wrapper(controller.GetAdminCtrl().Logout),
 }
 
 var statusCmd = &cobra.Command{
@@ -37,12 +34,7 @@ var statusCmd = &cobra.Command{
 	Aliases: []string{"s"},
 	Short:   "Display username of the logged account",
 	Long:    "Display username of the logged account",
-	PreRun:  adminPreRun,
-	Run:     controller.GetAdminCtrl().GetStatus,
-}
-
-func adminPreRun(cmd *cobra.Command, args []string) {
-	controller.GetAdminCtrl().Ctx.BindPFlags(cmd.Flags())
+	Run:     wrapper(controller.GetAdminCtrl().GetStatus),
 }
 
 func init() {

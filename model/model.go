@@ -4,9 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/spf13/viper"
+	"go/types"
 	"io"
 	"os"
 )
+
+type Manager types.Basic
 
 type Database struct {
 	isInit  bool

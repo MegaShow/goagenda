@@ -1,5 +1,8 @@
 package model
 
+type MeetingModel interface {
+}
+
 type MeetingDB struct {
 	Data []Meeting
 	Database
@@ -8,12 +11,15 @@ type MeetingDB struct {
 type Meeting struct {
 }
 
-var MeetingModel = UserDB{Database: Database{schema: "Meeting"}}
-
-func initMeetingModel() {
-	MeetingModel.initModel(&MeetingModel.Data)
-}
+var meetingDB = UserDB{Database: Database{schema: "Meeting"}}
 
 func ReleaseMeetingModel() {
-	MeetingModel.releaseModel(&MeetingModel.Data)
+	meetingDB.releaseModel(&meetingDB.Data)
+}
+
+func (m *Manager) Meeting() MeetingModel {
+	if meetingDB.isInit == false {
+		meetingDB.initModel(&meetingDB.Data)
+	}
+	return &meetingDB
 }

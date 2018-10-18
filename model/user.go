@@ -4,6 +4,11 @@ import (
 	"strings"
 )
 
+type UserModel interface {
+	AddUser(user User)
+	GetUserByName(name string) User
+}
+
 type UserDB struct {
 	Data []User
 	Database
@@ -17,10 +22,9 @@ type User struct {
 	Salt      string `json:"salt"`
 }
 
-var UserModel = UserDB{Database: Database{schema: "User"}}
+var userDB = UserDB{Database: Database{schema: "User"}}
 
 func (m *UserDB) GetUserByName(name string) User {
-	initUserModel()
 	for _, item := range m.Data {
 		if strings.ToLower(item.Name) == strings.ToLower(name) {
 			return item
@@ -30,15 +34,17 @@ func (m *UserDB) GetUserByName(name string) User {
 }
 
 func (m *UserDB) AddUser(user User) {
-	initUserModel()
 	m.isDirty = true
 	m.Data = append(m.Data, user)
 }
 
-func initUserModel() {
-	UserModel.initModel(&UserModel.Data)
+func ReleaseUserModel() {
+	userDB.releaseModel(&userDB.Data)
 }
 
-func ReleaseUserModel() {
-	UserModel.releaseModel(&UserModel.Data)
+func (m *Manager) User() UserModel {
+	if userDB.isInit == false {
+		userDB.initModel(&userDB.Data)
+	}
+	return &userDB
 }

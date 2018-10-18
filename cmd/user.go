@@ -17,8 +17,7 @@ var userDeleteCmd = &cobra.Command{
 	Aliases: []string{"d"},
 	Short:   "Delete your account",
 	Long:    "Delete your account",
-	PreRun:  userPreRun,
-	Run:     controller.GetUserCtrl().Delete,
+	Run:     wrapper(controller.GetUserCtrl().Delete),
 }
 
 var userListCmd = &cobra.Command{
@@ -26,8 +25,7 @@ var userListCmd = &cobra.Command{
 	Aliases: []string{"l"},
 	Short:   "List users",
 	Long:    "List users",
-	PreRun:  userPreRun,
-	Run:     controller.GetUserCtrl().List,
+	Run:     wrapper(controller.GetUserCtrl().List),
 }
 
 var userSetCmd = &cobra.Command{
@@ -35,12 +33,7 @@ var userSetCmd = &cobra.Command{
 	Aliases: []string{"s"},
 	Short:   "Set user's profile",
 	Long:    "Set user's profile",
-	PreRun:  userPreRun,
-	Run:     controller.GetUserCtrl().Set,
-}
-
-func userPreRun(cmd *cobra.Command, args []string) {
-	controller.GetUserCtrl().Ctx.BindPFlags(cmd.Flags())
+	Run:     wrapper(controller.GetUserCtrl().Set),
 }
 
 func init() {

@@ -1,9 +1,9 @@
 package controller
 
-type MeetingCtrl Controller
+type MeetingCtrl interface {
 
-var meetingCtrl MeetingCtrl
+}
 
-func GetMeetingCtrl() *MeetingCtrl {
-	return (*MeetingCtrl)(initController((*Controller)(&meetingCtrl)))
+func GetMeetingCtrl() MeetingCtrl {
+	return &ctrl
 }
