@@ -17,6 +17,16 @@ $ git clone https://github.com/yourname/goagenda.git $GOPATH/src/github.com/Mega
 4. 编写任务逻辑，且自己Review。
 5. Pull request至本项目。
 
+### Coding Require
+
+* Verbose日志可出现在任何函数中。
+* Service服务函数中不应该出现任何Info、Show、Error日志，而是通过返回error的方式交给Controller打印日志。
+
+### Commit Require
+
+* Message Title只允许出现英文，首字母大写，禁止以标点符号结尾。
+* Message Body只允许出现英文，允许留空，其余要求不做限制。
+
 ## Code Architecture
 
 ### 如何编写一个命令集？
@@ -107,8 +117,9 @@ func init() {
 ```go
 type Controller struct {
 	Args []string
-	Cmd *cobra.Command
-	Ctx *viper.Viper
+	Cmd  *cobra.Command
+	Ctx  *viper.Viper
+	Srv  service.Manager
 }
 ```
 
@@ -313,5 +324,81 @@ Go Agenda的日志分为4个等级：
 
 ### 如何编写一个服务？
 
-Coming soon.
+> Go Agenda的服务均绑定在同一个Service类型上，但使用管理者Manager来隔离绑定的方法。
+
+在`service/service.go`中，定义了类型Service和Manager。
+
+```go
+type Service struct {
+	DB model.Manager
+}
+
+type Manager Service
+
+func (s *Manager) GetService() *Service {
+	return (*Service)(s)
+}
+```
+
+编写服务时，将服务函数均绑定在Service上，但是通过Manager的相应的方法暴露出去。
+
+Controller中，拥有成员`service.Manager`。
+
+```go
+type Controller struct {
+	Args    []string
+	Cmd     *cobra.Command
+	Ctx     *viper.Viper
+	Srv		service.Manager
+}
+```
+
+在每一个服务`.go`文件中，均定义了获取相应服务集的方法。
+
+```go
+func (s *Manager) Admin() AdminService {
+	return s.GetService()
+}
+```
+
+这里的`AdminService`是一个接口，其中定义了相应服务的方法。
+
+```go
+type AdminService interface {
+	Login(name, password string) error
+	Register(name, password, email, telephone string) error
+}
+```
+
+### 如果编写一个数据库模型？
+
+与服务相似，数据库模型也采用了本体加管理者的方式实现。
+
+注意，数据库使用前必须手动初始化，使用后必须手动回收。
+
+不过，由于采用了管理者来进行数据库的管理，可以将初始化交给管理者负责。
+
+```go
+func (m *Manager) User() UserModel {
+	if userDB.isInit == false {
+		userDB.initModel(&userDB.Data)
+	}
+	return &userDB
+}
+```
+
+回收释放的代码位于`controller/controller.go`中，由`rootCmd`负责调用。
+
+```go
+func CtrlRelease(cmd *cobra.Command, args []string) {
+	log.Release()
+	model.ReleaseUserModel()
+	model.ReleaseMeetingModel()
+	model.ReleaseStatusModel()
+}
+```
+
+### 其他
+
+请询问，可继续添加。
 
