@@ -15,9 +15,11 @@ func verifyUser(user string) {
 }
 
 func verifyPassword(password string) {
+	/*
 	if password == "" {
 		return
 	}
+	*/
 	log.Verbose("check if parameter password matches rules")
 	verify.AssertLength(1, 64, password, "password too long")
 }
