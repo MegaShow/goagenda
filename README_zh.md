@@ -10,13 +10,13 @@ Agenda是一个基于命令行的会议管理系统。
 
 \[[English](README.md)\]  [中文]  \[[Contributing](CONTRIBUTING.md)\]
 
-## Quick Start
+## 快速入门
 
 Coming soon.
 
-## User manual
+## 用户手册
 
-### Register
+### 注册
 
 ### 登入/登出
 
@@ -33,21 +33,21 @@ $ agenda user set [-p <password>] [-e <email>] [-t <telephone>]
 
 ### 删除用户
 
-### List users
+### 显示所有用户
 
-### Create a meeting
+### 创建所有会议
 
-### Set information of meeting
+### 修改会议信息
 
 ### 添加或移除与会者
 
-### Delete or quit a meeting
+### 删除或退出会议
 
 ### 显示所有会议
 
-### Print log
+### 打印日志
 
-## License
+## 协议
 
 使用Apache License 2.0协议。
 
