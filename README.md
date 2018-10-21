@@ -24,24 +24,41 @@ Coming soon.
 
 ### Set information of user
 
+```
+$ agenda user set [-p <password>] [-e <email>] [-t <telephone>]
+```
+
+- The password cannot be empty.
+- The email address and telephone can be set empty. Please input  `-e ""` or `-t ""` to indicate it.
+
 ### Delete user
 
 ### List users
 
 ### Create a meeting
 
+```
+$ agenda meeting create -t <title> -p <participator> -s <startTime> -e <endTime>
+```
+
+- If you want to add more than one participator, please input like `-p p1,p2,...,pN` .
+- Input time like `year-month-day-hour-minute` .
+
 ### Set information of meeting
 
 ```
-$ agenda user set [-p <password>] [-e <email>] [-t <telephone>]
+$ agenda meeting set -t <title> [-p <participator>] [-s <startTime>] [-e <endTime>]
 ```
-
-- The password cannot be empty.
-- The email address and telephone can be set empty. Please input "" to indicate an empty string.
 
 ### Add or remove participator
 
-### Delete or quit a meeting
+### Delete a meeting
+
+### Quit a meeting
+
+```
+$ agenda meeting quit -t <title>
+```
 
 ### List meetings
 

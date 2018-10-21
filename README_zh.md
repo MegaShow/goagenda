@@ -22,28 +22,45 @@ Coming soon.
 
 ### 显示当前状态
 
-### 设置用户信息
+### 修改用户信息
 
 ```
 $ agenda user set [-p <password>] [-e <email>] [-t <telephone>]
 ```
 
 - 密码不能为空。
-- 邮件地址和电话可以为空。请输入""以表示空字符串。
+- 邮件地址和电话可以设为空。请输入 `-e ""` 或 `-t ""` 以表示置空。
 
 ### 删除用户
 
 ### 显示所有用户
 
-### 创建所有会议
+### 创建会议
+
+```
+$ agenda meeting create -t <title> -p <participator> -s <startTime> -e <endTime>
+```
+
+- 如果你想添加多个与会者，请像这样输入：`-p p1,p2,...,pN` 
+- 你可以这样输入时间： `year-month-day-hour-minute` 
 
 ### 修改会议信息
 
+```
+$ agenda meeting set -t <title> [-p <participator>] [-s <startTime>] [-e <endTime>]
+```
+
 ### 添加或移除与会者
 
-### 删除或退出会议
+### 删除会议
 
-### 显示所有会议
+###  退出会议
+
+```
+$ agenda meeting quit -t <title>
+```
+
+### 查询会议
 
 ### 打印日志
 
