@@ -2,6 +2,8 @@ package controller
 
 import (
 	"fmt"
+
+	"github.com/MegaShow/goagenda/lib/log"
 )
 
 type UserCtrl interface {
@@ -12,6 +14,15 @@ type UserCtrl interface {
 
 func (c *Controller) Delete() {
 	// TODO
+	userName := c.Srv.Admin().GetCurrentUserName()
+	if userName == "" {
+		log.Show("you should login")
+		return
+	}
+	log.SetUser(userName)
+	c.Srv.User().DeleteUser(userName)
+	log.Info("Delete account successfully")
+	c.Srv.Admin().SetCurrentUserName("")
 }
 
 func (c *Controller) List() {
