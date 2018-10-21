@@ -32,6 +32,13 @@ Coming soon.
 
 ### Set information of meeting
 
+```
+$ agenda user set [-p <password>] [-e <email>] [-t <telephone>]
+```
+
+- The password cannot be empty.
+- The email address and telephone can be set empty. Please input "" to indicate an empty string.
+
 ### Add or remove participator
 
 ### Delete or quit a meeting
