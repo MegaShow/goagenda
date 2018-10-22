@@ -23,12 +23,12 @@ func (c *Controller) DeleteMeeting() {
 
 func (c *Controller) Add() {
 	fmt.Println("title: ", c.Ctx.GetString("title"))
-	participater := c.Args
-	if len(participater) == 0 {
+	participator := c.Args
+	if len(participator) == 0 {
 		fmt.Println(0)
 	}
-	for i := 0; i < len(participater); i++ {
-		fmt.Println(participater[i])
+	for i := 0; i < len(participator); i++ {
+		fmt.Println(participator[i])
 	}
 }
 
@@ -41,12 +41,12 @@ func (c *Controller) ListMeeting() {
 
 func (c *Controller) Remove() {
 	fmt.Println("title: ", c.Ctx.GetString("title"))
-	participater := c.Args
-	if len(participater) == 0 {
+	participator := c.Args
+	if len(participator) == 0 {
 		fmt.Println(0)
 	}
-	for i := 0; i < len(participater); i++ {
-		fmt.Println(participater[i])
+	for i := 0; i < len(participator); i++ {
+		fmt.Println(participator[i])
 	}
 }
 
