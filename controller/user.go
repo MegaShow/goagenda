@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"errors"
 	"fmt"
 	"github.com/MegaShow/goagenda/lib/log"
 )
@@ -24,18 +25,19 @@ func (c *Controller) Set() {
 	password := c.Ctx.GetString("password")
 	email := c.Ctx.GetString("email")
 	telephone := c.Ctx.GetString("telephone")
-
 	_, setP := c.Visit["password"]
 	_, setE := c.Visit["email"]
 	_, setT := c.Visit["telephone"]
-	if setP {
-		verifyPassword(password)
+
+	if setP && password == "" {
+		err := errors.New("password empty")
+		log.Error(err.Error())
 	}
+	verifyPassword(password)
 	verifyEmail(email)
 	verifyTelephone(telephone)
 
-
-	err := c.Srv.User().Set(password, email, setE, telephone, setT)
+	err := c.Srv.User().Set(password, setP, email, setE, telephone, setT)
 	if err != nil {
 		log.Error(err.Error())
 	}

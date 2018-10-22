@@ -7,7 +7,7 @@ import (
 type UserModel interface {
 	AddUser(user User)
 	GetUserByName(name string) User
-	SetUser(password string, salt string, email string, setEmail bool, telephone string, setTel bool)
+	SetUser(password string, salt string, setPassword bool, email string, setEmail bool, telephone string, setTel bool)
 }
 
 type UserDB struct {
@@ -39,18 +39,20 @@ func (m *UserDB) AddUser(user User) {
 	m.Data = append(m.Data, user)
 }
 
-func (m *UserDB) SetUser(password string, salt string, email string, setEmail bool, telephone string, setTel bool) {
+func (m *UserDB) SetUser(password string, salt string, setPassword bool, email string, setEmail bool, telephone string, setTel bool) {
 	m.isDirty = true
-	name := statusDB.GetStatus().Name
-	for _, item := range m.Data {
-		if strings.ToLower(item.Name) == strings.ToLower(name) {
-			item.Password = password
-			item.Salt = salt
+	status := statusDB.GetStatus()
+	for index, item := range m.Data {
+		if strings.ToLower(item.Name) == strings.ToLower(status.Name) {
+			if setPassword {
+				m.Data[index].Password = password
+				m.Data[index].Salt = salt
+			}
 			if setEmail {
-				item.Email = email
+				m.Data[index].Email = email
 			}
 			if setTel {
-				item.Telephone = telephone
+				m.Data[index].Telephone = telephone
 			}
 			break
 		}

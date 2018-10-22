@@ -7,10 +7,10 @@ import (
 )
 
 type UserService interface {
-	Set(password string, email string, setEmail bool, telephone string, setTel bool) error
+	Set(password string, setPassword bool, email string, setEmail bool, telephone string, setTel bool) error
 }
 
-func (s *Service) Set(password string, email string, setEmail bool, telephone string, setTel bool) error {
+func (s *Service) Set(password string, setPassword bool, email string, setEmail bool, telephone string, setTel bool) error {
 	log.Verbose("check status")
 	status := s.DB.Status().GetStatus()
 	if status.Name == "" {
@@ -18,8 +18,11 @@ func (s *Service) Set(password string, email string, setEmail bool, telephone st
 	}
 
 	log.Verbose("set logged user")
-	password, salt := hash.Encrypt(password)
-	s.DB.User().SetUser(password, salt, email, setEmail, telephone, setTel)
+	salt := ""
+	if setPassword {
+		password, salt = hash.Encrypt(password)
+	}
+	s.DB.User().SetUser(password, salt, setPassword, email, setEmail, telephone, setTel)
 	return nil
 }
 
