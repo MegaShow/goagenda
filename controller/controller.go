@@ -5,6 +5,7 @@ import (
 	"github.com/MegaShow/goagenda/model"
 	"github.com/MegaShow/goagenda/service"
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 )
 
@@ -15,6 +16,7 @@ type Controller struct {
 	Cmd     *cobra.Command
 	Ctx     *viper.Viper
 	Srv		service.Manager
+	Visit	map[string]bool
 }
 
 func CtrlRelease(cmd *cobra.Command, args []string) {
@@ -33,6 +35,10 @@ func WrapperRun(fn func()) func(*cobra.Command, []string) {
 		ctrl.Cmd = cmd
 		ctrl.Ctx = viper.New()
 		ctrl.Ctx.BindPFlags(cmd.Flags())
+		ctrl.Visit = make(map[string]bool)
+		cmd.Flags().Visit(func(flag *pflag.Flag) {
+			ctrl.Visit[flag.Name] = true
+		})
 		fn()
 	}
 }

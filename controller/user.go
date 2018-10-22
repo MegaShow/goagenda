@@ -1,7 +1,9 @@
 package controller
 
 import (
+	"errors"
 	"fmt"
+	"github.com/MegaShow/goagenda/lib/log"
 )
 
 type UserCtrl interface {
@@ -20,10 +22,27 @@ func (c *Controller) List() {
 }
 
 func (c *Controller) Set() {
-	fmt.Println("password:", c.Ctx.GetString("password"))
-	fmt.Println("email:", c.Ctx.GetString("email"))
-	fmt.Println("telephone:", c.Ctx.GetString("telephone"))
-	// TODO
+	password := c.Ctx.GetString("password")
+	email := c.Ctx.GetString("email")
+	telephone := c.Ctx.GetString("telephone")
+	_, setP := c.Visit["password"]
+	_, setE := c.Visit["email"]
+	_, setT := c.Visit["telephone"]
+
+	if setP && password == "" {
+		err := errors.New("password empty")
+		log.Error(err.Error())
+	}
+	verifyPassword(password)
+	verifyEmail(email)
+	verifyTelephone(telephone)
+
+	err := c.Srv.User().Set(password, setP, email, setE, telephone, setT)
+	if err != nil {
+		log.Error(err.Error())
+	}
+	log.SetUser(c.Srv.Admin().GetCurrentUserName())
+	log.Info("set user successfully")
 }
 
 func GetUserCtrl() UserCtrl {
