@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+
 	"github.com/MegaShow/goagenda/lib/hash"
 	"github.com/MegaShow/goagenda/lib/log"
 	"github.com/MegaShow/goagenda/model"
