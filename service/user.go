@@ -7,6 +7,7 @@ import (
 
 type UserService interface {
 	Set(name, password string, setPassword bool, email string, setEmail bool, telephone string, setTel bool) error
+	DeleteUser(name string)
 }
 
 func (s *Service) Set(name, password string, setPassword bool, email string, setEmail bool, telephone string, setTel bool) error {
@@ -17,6 +18,10 @@ func (s *Service) Set(name, password string, setPassword bool, email string, set
 	}
 	s.DB.User().SetUser(name, password, salt, setPassword, email, setEmail, telephone, setTel)
 	return nil
+}
+
+func (s *Service) DeleteUser(name string) {
+	s.DB.User().DeleteUser(name)
 }
 
 func (s *Manager) User() UserService {

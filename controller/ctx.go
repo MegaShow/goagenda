@@ -55,3 +55,8 @@ func (c *Ctx) GetSecretString(key string) (string, bool) {
 	value, visit := c.GetSecret(key)
 	return cast.ToString(value), visit
 }
+
+func (c *Ctx) GetBool(key string) (bool, bool) {
+	value, visit := c.Get(key)
+	return cast.ToBool(value), visit
+}

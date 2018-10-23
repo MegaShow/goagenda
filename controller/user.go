@@ -12,7 +12,15 @@ type UserCtrl interface {
 }
 
 func (c *Controller) UserDelete() {
-	// TODO
+	currentUser := c.Ctx.User.Get()
+	if currentUser == "" {
+		fmt.Println("you should login")
+		return
+	}
+
+	c.Srv.User().DeleteUser(currentUser)
+	c.Ctx.User.Set("")
+	log.Info("Delete account successfully")
 }
 
 func (c *Controller) UserList() {
@@ -35,7 +43,7 @@ func (c *Controller) UserSet() {
 	log.Verbose("check status")
 	currentUser := c.Ctx.User.Get()
 	if currentUser == "" {
-		fmt.Println("not logged user")
+		fmt.Println("you should login")
 		return
 	}
 

@@ -33,6 +33,14 @@ $ agenda user set [-p <password>] [-e <email>] [-t <telephone>]
 
 ### 删除用户
 
+```
+$ agenda user delete
+```
+
+- 必须处于登陆状态才能删除
+- 你将会删除你自己的账户
+- 删除用户后，你将登出改账户
+
 ### 显示所有用户
 
 ### 创建会议
@@ -67,4 +75,3 @@ $ agenda meeting quit -t <title>
 ## 协议
 
 使用Apache License 2.0协议。
-

@@ -8,6 +8,7 @@ type UserModel interface {
 	AddUser(user User)
 	GetUserByName(name string) User
 	SetUser(name, password, salt string, setPassword bool, email string, setEmail bool, telephone string, setTel bool)
+	DeleteUser(name string)
 }
 
 type UserDB struct {
@@ -67,4 +68,18 @@ func (m *Manager) User() UserModel {
 		userDB.initModel(&userDB.Data)
 	}
 	return &userDB
+}
+
+func (m *UserDB) DeleteUser(name string) {
+	m.isDirty = true
+	index := -1
+	for i := 0; i < len(m.Data); i++ {
+		if m.Data[i].Name == name {
+			index = i
+			break
+		}
+	}
+	if index != -1 {
+		m.Data = append(m.Data[:index], m.Data[index+1:]...)
+	}
 }
