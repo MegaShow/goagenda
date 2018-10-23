@@ -11,7 +11,7 @@ var registerCmd = &cobra.Command{
 	Short:   "Register an account",
 	Long: `Register an account with username and password necessarily,
 and with email and telephone optionally.`,
-	Run:    wrapper(controller.GetAdminCtrl().Register),
+	Run: wrapper(controller.GetAdminCtrl().Register),
 }
 
 var loginCmd = &cobra.Command{
@@ -19,14 +19,16 @@ var loginCmd = &cobra.Command{
 	Aliases: []string{"l"},
 	Short:   "Log in agenda",
 	Long:    "Log in agenda with username and password.",
+	Args:    cobra.NoArgs,
 	Run:     wrapper(controller.GetAdminCtrl().Login),
 }
 
 var logoutCmd = &cobra.Command{
-	Use:    "logout",
-	Short:  "Log out agenda",
-	Long:   "Log out agenda.",
-	Run:    wrapper(controller.GetAdminCtrl().Logout),
+	Use:   "logout",
+	Short: "Log out agenda",
+	Long:  "Log out agenda.",
+	Args:  cobra.NoArgs,
+	Run:   wrapper(controller.GetAdminCtrl().Logout),
 }
 
 var statusCmd = &cobra.Command{
@@ -34,6 +36,7 @@ var statusCmd = &cobra.Command{
 	Aliases: []string{"s"},
 	Short:   "Display username of the logged account",
 	Long:    "Display username of the logged account",
+	Args:    cobra.NoArgs,
 	Run:     wrapper(controller.GetAdminCtrl().GetStatus),
 }
 

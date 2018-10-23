@@ -75,19 +75,19 @@ var userRootCmd = &cobra.Command{
 var userDeleteCmd = &cobra.Command{
 	Use:     "delete",
 	Aliases: []string{"d"},
-	Run:     wrapper(controller.GetUserCtrl().Delete),
+	Run:     wrapper(controller.GetUserCtrl().UserDelete),
 }
 
 var userListCmd = &cobra.Command{
 	Use:     "list",
 	Aliases: []string{"l"},
-	Run:     wrapper(controller.GetUserCtrl().List),
+	Run:     wrapper(controller.GetUserCtrl().UserList),
 }
 
 var userSetCmd = &cobra.Command{
 	Use:     "set",
 	Aliases: []string{"s"},
-	Run:     wrapper(controller.GetUserCtrl().Set),
+	Run:     wrapper(controller.GetUserCtrl().UserSet),
 }
 ```
 
@@ -118,7 +118,7 @@ func init() {
 type Controller struct {
 	Args []string
 	Cmd  *cobra.Command
-	Ctx  *viper.Viper
+	Ctx  Ctx
 	Srv  service.Manager
 }
 ```
@@ -135,20 +135,20 @@ var ctrl Controller
 
 ```go
 type UserCtrl interface {
-	Delete()
-	List()
-	Set()
+	UserDelete()
+	UserList()
+	UserSet()
 }
 ```
 
 接下来，我们就可以声明Controller所要绑定的方法。
 
 ```go
-func (c *Controller) Delete() {}
+func (c *Controller) UserDelete() {}
 
-func (c *Controller) List() {}
+func (c *Controller) UserList() {}
 
-func (c *Controller) Set() {}
+func (c *Controller) UserSet() {}
 ```
 
 针对每个命令集，只需通过其控制器接口来获取控制器实例。
@@ -166,10 +166,33 @@ func GetUserCtrl() UserCtrl {
 ```go
 func WrapperRun(fn func()) func(*cobra.Command, []string) {
 	return func(cmd *cobra.Command, args []string) {
+		cmdStr := cmd.Name()
+		cmd.VisitParents(func(pcmd *cobra.Command) { cmdStr = pcmd.Name() + "." + cmdStr })
+		log.SetCommand(cmdStr)
+		if len(args) != 0 {
+			log.AddParams("args", args)
+		}
 		ctrl.Args = args
 		ctrl.Cmd = cmd
-		ctrl.Ctx = viper.New()
-		ctrl.Ctx.BindPFlags(cmd.Flags())
+		ctrl.Ctx.User = &user{
+			get: func() string {
+				name := ctrl.Srv.Admin().GetCurrentUserName()
+				log.SetUser(name)
+				return name
+			},
+			set: func(name string) error {
+				err := ctrl.Srv.Admin().SetCurrentUserName(name)
+				if err == nil && name != "" {
+					log.SetUser(name)
+				}
+				return err
+			},
+		}
+		ctrl.Ctx.User.Get()
+		ctrl.Ctx.Value = viper.New()
+		ctrl.Ctx.Value.BindPFlags(cmd.Flags())
+		ctrl.Ctx.Visit = make(map[string]bool)
+		cmd.Flags().Visit(func(flag *pflag.Flag) { ctrl.Ctx.Visit[flag.Name] = true })
 		fn()
 	}
 }
@@ -189,7 +212,7 @@ func wrapper(fn func()) func(*cobra.Command, []string) {
 var userListCmd = &cobra.Command{
 	Use:     "list",
 	Aliases: []string{"l"},
-	Run:     wrapper(controller.GetUserCtrl().List),
+	Run:     wrapper(controller.GetUserCtrl().UserList),
 }
 ```
 
@@ -203,11 +226,7 @@ Go Agenda封装了Command所需要的函数，并在封装中加入了初始化�
 // controller/controller.go
 func WrapperRun(fn func()) func(*cobra.Command, []string) {
 	return func(cmd *cobra.Command, args []string) {
-		ctrl.Args = args
-		ctrl.Cmd = cmd
-		ctrl.Ctx = viper.New()
-		ctrl.Ctx.BindPFlags(cmd.Flags())
-		fn()
+		// more code
 	}
 }
 ```
@@ -224,8 +243,10 @@ $ agenda user list hello -u MegaShow what happen?
 
 ```go
 func (c *Controller) List() {
-	fmt.Println("user:", c.Ctx.GetString("user"))
-	fmt.Println("password:", c.Ctx.GetString("password"))
+    user, _ := c.Ctx.GetString("user")
+    password, _ := c.Ctx.GetSecretString("password")
+	fmt.Println("user:", user)
+	fmt.Println("password:", password)
 	fmt.Println("others:", c.Args)
 }
 ```
@@ -239,6 +260,37 @@ others: [hello what happen?]
 ```
 
 **注意：虽然初始化同时也将`Cmd`传值，但是不建议直接操作该成员。**
+
+`Ctx`是一个被封装的`viper.Viper`类，实现了Flag封装和状态封装，根据需求决定是否记录到日志中。
+
+```go
+type Ctx struct {
+	Value *viper.Viper
+	Visit map[string]bool
+	User  User
+}
+```
+
+`Value`值的获取，分别提供了普通取值方式和`Secret`取值方式。普通方式将会将该值记录到日志中，而秘密取值不会，秘密取值适合于密码参数获取。
+
+```go
+user, userOk := c.Ctx.GetString("user")
+password, passwordOk := c.Ctx.GetSecretString("password")
+```
+
+取值函数的第二个参数为其`Visit`值，类型为`bool`。
+
+当前状态通过`c.Ctx.User`修改，这也是一个封装类型，它拥有直接与`service.Admin()`交互的权限。**因为采用了提前处理状态，服务中相关方法将被禁止调用。**
+
+```go
+currentUser := c.Ctx.User.Get()
+err := c.Ctx.User.Set(user)
+if err != nil {
+	// more code
+}
+```
+
+> 当前状态的获取和判断，应该在参数验证之后、进行服务之前。
 
 ### 如何验证参数合法性？
 
@@ -282,19 +334,17 @@ func verifyUser(user string) {
 
 ```go
 func (c *Controller) Register() {
-	user := c.Ctx.GetString("user")
-	password := c.Ctx.GetString("password")
-	email := c.Ctx.GetString("email")
-	telephone := c.Ctx.GetString("telephone")
+	user, _ := c.Ctx.GetString("user")
+	password, _ := c.Ctx.GetSecretString("password")
+	email, _ := c.Ctx.GetString("email")
+	telephone, _ := c.Ctx.GetString("telephone")
 
 	verifyUser(user)
 	verifyPassword(password)
 	verifyEmail(email)
 	verifyTelephone(telephone)
+	verifyEmptyArgs(c.Args)
 
-	log.SetUser(user)
-	log.AddParams("email", email)
-	log.AddParams("telephone", telephone)
 	err := c.Srv.Admin().Register(user, password, email, telephone)
 	if err != nil {
 		log.Error(err.Error())
@@ -314,13 +364,15 @@ Go Agenda的日志管理在Controller验证参数之后进行。日志管理需�
 Go Agenda的日志分为4个等级：
 
 * `Verbose`：细节日志，记录每个执行函数操作。该日志不会被存储，且只有声明了`-v`全局Flag才会打印到标准输出中。用于调试。
-* `Show`：展示日志，本质上就是`fmt.Println`，记录有用信息。该日志不会被存储，只会被打印到标准输出中。
+* ~~`Show`：展示日志，本质上就是`fmt.Println`，记录有用信息。该日志不会被存储，只会被打印到标准输出中。~~
 * `Info`：信息日志，记录命令执行成功的结果。该日志会被存储，且会被打印到标准输出中。
 * `Error`：错误日志，与`Info`相反，记录命令执行失败的结果。该日志会被存储，且会被打印到标准输出中。
 
-> Go Agenda使用`Show`日志来替代`fmt.Println`，如果有更好的解决方案不妨提出来。
+> ~~Go Agenda使用`Show`日志来替代`fmt.Println`，如果有更好的解决方案不妨提出来。~~
+>
+> Go Agenda使用`fmt.Println`替代原有的`Show`日志。
 
-在Controller验证参数之后，首先执行的是给日志设置用户名以及参数。
+给日志设置用户名以及参数已经封装在`Ctx`和`Wrapper`中，只要按照规定获取参数，即可正常工作。
 
 ### 如何编写一个服务？
 

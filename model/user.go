@@ -59,6 +59,16 @@ func (m *UserDB) SetUser(name, password, salt string, setPassword bool, email st
 	}
 }
 
+func (m *UserDB) DeleteUser(name string) {
+	m.isDirty = true
+	for i := 0; i < len(m.Data); i++ {
+		if m.Data[i].Name == name {
+			m.Data = append(m.Data[:i], m.Data[i+1:]...)
+			return
+		}
+	}
+}
+
 func ReleaseUserModel() {
 	userDB.releaseModel(&userDB.Data)
 }
@@ -68,18 +78,4 @@ func (m *Manager) User() UserModel {
 		userDB.initModel(&userDB.Data)
 	}
 	return &userDB
-}
-
-func (m *UserDB) DeleteUser(name string) {
-	m.isDirty = true
-	index := -1
-	for i := 0; i < len(m.Data); i++ {
-		if m.Data[i].Name == name {
-			index = i
-			break
-		}
-	}
-	if index != -1 {
-		m.Data = append(m.Data[:index], m.Data[index+1:]...)
-	}
 }

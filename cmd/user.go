@@ -17,6 +17,7 @@ var userDeleteCmd = &cobra.Command{
 	Aliases: []string{"d"},
 	Short:   "Delete your account",
 	Long:    "Delete your account",
+	Args:    cobra.NoArgs,
 	Run:     wrapper(controller.GetUserCtrl().UserDelete),
 }
 
@@ -25,6 +26,7 @@ var userListCmd = &cobra.Command{
 	Aliases: []string{"l"},
 	Short:   "List users",
 	Long:    "List users",
+	Args:    cobra.NoArgs,
 	Run:     wrapper(controller.GetUserCtrl().UserList),
 }
 
@@ -33,6 +35,7 @@ var userSetCmd = &cobra.Command{
 	Aliases: []string{"s"},
 	Short:   "Set user's profile",
 	Long:    "Set user's profile",
+	Args:    cobra.NoArgs,
 	Run:     wrapper(controller.GetUserCtrl().UserSet),
 }
 
