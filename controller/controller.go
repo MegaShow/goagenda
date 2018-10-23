@@ -12,11 +12,10 @@ import (
 var ctrl Controller
 
 type Controller struct {
-	Args    []string
-	Cmd     *cobra.Command
-	Ctx     *viper.Viper
-	Srv		service.Manager
-	Visit	map[string]bool
+	Args []string
+	Cmd  *cobra.Command
+	Ctx  Ctx
+	Srv  service.Manager
 }
 
 func CtrlRelease(cmd *cobra.Command, args []string) {
@@ -31,14 +30,30 @@ func WrapperRun(fn func()) func(*cobra.Command, []string) {
 		cmdStr := cmd.Name()
 		cmd.VisitParents(func(pcmd *cobra.Command) { cmdStr = pcmd.Name() + "." + cmdStr })
 		log.SetCommand(cmdStr)
+		if len(args) != 0 {
+			log.AddParams("args", args)
+		}
 		ctrl.Args = args
 		ctrl.Cmd = cmd
-		ctrl.Ctx = viper.New()
-		ctrl.Ctx.BindPFlags(cmd.Flags())
-		ctrl.Visit = make(map[string]bool)
-		cmd.Flags().Visit(func(flag *pflag.Flag) {
-			ctrl.Visit[flag.Name] = true
-		})
+		ctrl.Ctx.User = &user{
+			get: func() string {
+				name := ctrl.Srv.Admin().GetCurrentUserName()
+				log.SetUser(name)
+				return name
+			},
+			set: func(name string) error {
+				err := ctrl.Srv.Admin().SetCurrentUserName(name)
+				if err == nil && name != "" {
+					log.SetUser(name)
+				}
+				return err
+			},
+		}
+		ctrl.Ctx.User.Get()
+		ctrl.Ctx.Value = viper.New()
+		ctrl.Ctx.Value.BindPFlags(cmd.Flags())
+		ctrl.Ctx.Visit = make(map[string]bool)
+		cmd.Flags().Visit(func(flag *pflag.Flag) { ctrl.Ctx.Visit[flag.Name] = true })
 		fn()
 	}
 }

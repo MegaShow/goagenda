@@ -1,28 +1,21 @@
 package service
 
 import (
-	"errors"
 	"github.com/MegaShow/goagenda/lib/hash"
 	"github.com/MegaShow/goagenda/lib/log"
 )
 
 type UserService interface {
-	Set(password string, setPassword bool, email string, setEmail bool, telephone string, setTel bool) error
+	Set(name, password string, setPassword bool, email string, setEmail bool, telephone string, setTel bool) error
 }
 
-func (s *Service) Set(password string, setPassword bool, email string, setEmail bool, telephone string, setTel bool) error {
-	log.Verbose("check status")
-	status := s.DB.Status().GetStatus()
-	if status.Name == "" {
-		return errors.New("you are not logged")
-	}
-
+func (s *Service) Set(name, password string, setPassword bool, email string, setEmail bool, telephone string, setTel bool) error {
 	log.Verbose("set logged user")
 	salt := ""
 	if setPassword {
 		password, salt = hash.Encrypt(password)
 	}
-	s.DB.User().SetUser(password, salt, setPassword, email, setEmail, telephone, setTel)
+	s.DB.User().SetUser(name, password, salt, setPassword, email, setEmail, telephone, setTel)
 	return nil
 }
 

@@ -30,7 +30,7 @@ func (m *Database) initModel(data interface{}) {
 				os.Exit(2)
 			}
 		}
-		f, err := os.OpenFile(m.path+string(os.PathSeparator)+m.file, os.O_CREATE|os.O_RDONLY, 0666)
+		f, err := os.OpenFile(m.path+string(os.PathSeparator)+m.file, os.O_CREATE|os.O_RDONLY, 0777)
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(2)
@@ -48,7 +48,7 @@ func (m *Database) initModel(data interface{}) {
 
 func (m *Database) releaseModel(data interface{}) {
 	if m.isDirty == true {
-		f, err := os.OpenFile(m.path+string(os.PathSeparator)+m.file, os.O_CREATE|os.O_WRONLY, 0666)
+		f, err := os.OpenFile(m.path+string(os.PathSeparator)+m.file, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0777)
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(2)

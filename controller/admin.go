@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/MegaShow/goagenda/lib/log"
 )
 
@@ -12,19 +13,17 @@ type AdminCtrl interface {
 }
 
 func (c *Controller) Register() {
-	user := c.Ctx.GetString("user")
-	password := c.Ctx.GetString("password")
-	email := c.Ctx.GetString("email")
-	telephone := c.Ctx.GetString("telephone")
+	user, _ := c.Ctx.GetString("user")
+	password, _ := c.Ctx.GetSecretString("password")
+	email, _ := c.Ctx.GetString("email")
+	telephone, _ := c.Ctx.GetString("telephone")
 
 	verifyUser(user)
 	verifyPassword(password)
 	verifyEmail(email)
 	verifyTelephone(telephone)
+	verifyEmptyArgs(c.Args)
 
-	log.SetUser(user)
-	log.AddParams("email", email)
-	log.AddParams("telephone", telephone)
 	err := c.Srv.Admin().Register(user, password, email, telephone)
 	if err != nil {
 		log.Error(err.Error())
@@ -33,38 +32,52 @@ func (c *Controller) Register() {
 }
 
 func (c *Controller) Login() {
-	user := c.Ctx.GetString("user")
-	password := c.Ctx.GetString("password")
+	user, _ := c.Ctx.GetString("user")
+	password, _ := c.Ctx.GetSecretString("password")
 
 	verifyUser(user)
 	verifyPassword(password)
+	verifyEmptyArgs(c.Args)
 
-	log.SetUser(user)
+	log.Verbose("check status")
+	currentUser := c.Ctx.User.Get()
+	if currentUser == user {
+		log.Error("you are already logged in with this account")
+	} else if currentUser != "" {
+		log.Error("you are already logged in with user '" + currentUser + "', please logout first")
+	}
+
 	err := c.Srv.Admin().Login(user, password)
 	if err != nil {
 		log.Error(err.Error())
 	}
-	c.Srv.Admin().SetCurrentUserName(user)
+	err = c.Ctx.User.Set(user)
+	if err != nil {
+		log.Error(err.Error())
+	}
 	log.Info("login successfully")
 }
 
 func (c *Controller) Logout() {
-	user := c.Srv.Admin().GetCurrentUserName()
-	if user == "" {
-		log.Show("not logged user")
+	verifyEmptyArgs(c.Args)
+
+	currentUser := c.Ctx.User.Get()
+	if currentUser == "" {
+		fmt.Println("not logged user")
 		return
 	}
-	log.SetUser(user)
-	c.Srv.Admin().SetCurrentUserName("")
-	log.Info("user '" + user + "' logged out")
+	c.Ctx.User.Set("")
+	log.Info("user '" + currentUser + "' logged out")
 }
 
 func (c *Controller) GetStatus() {
-	user := c.Srv.Admin().GetCurrentUserName()
-	if user == "" {
-		log.Show("not logged user")
+	verifyEmptyArgs(c.Args)
+
+	currentUser := c.Ctx.User.Get()
+	if currentUser == "" {
+		fmt.Println("not logged user")
 	} else {
-		log.Show("user '" + user + "' logged in")
+		fmt.Println("user '" + currentUser + "' logged in")
 	}
 }
 

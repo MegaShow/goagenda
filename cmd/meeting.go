@@ -5,35 +5,35 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var meetingRootCmd = &cobra.Command {
-	Use:	"meeting",
+var meetingRootCmd = &cobra.Command{
+	Use:     "meeting",
 	Aliases: []string{"m", "meet"},
 	Short:   "Meeting management",
 	Long:    "Meeting management",
 }
 
-var meetingCreateCmd = &cobra.Command {
-	Use:	"create",
+var meetingCreateCmd = &cobra.Command{
+	Use:     "create",
 	Aliases: []string{"c"},
 	Short:   "Create a meeting",
 	Long:    "Create a meeting",
-	Run:	wrapper(controller.GetMeetingCtrl().Create)
+	Run:     wrapper(controller.GetMeetingCtrl().MeetingCreate),
 }
 
-var meetingSetCmd = &cobra.Command {
-	Use:	"set",
+var meetingSetCmd = &cobra.Command{
+	Use:     "set",
 	Aliases: []string{"s"},
 	Short:   "Set information of a meeting",
 	Long:    "Set information of a meeting",
-	Run:	wrapper(controller.GetMeetingCtrl().Set)
+	Run:     wrapper(controller.GetMeetingCtrl().MeetingSet),
 }
 
-var meetingQuitCmd = &cobra.Command {
-	Use:	"quit",
+var meetingQuitCmd = &cobra.Command{
+	Use:     "quit",
 	Aliases: []string{"q"},
 	Short:   "Quit a meeting",
 	Long:    "Quit a meeting",
-	Run:	wrapper(controller.GetMeetingCtrl().Quit)
+	Run:     wrapper(controller.GetMeetingCtrl().MeetingQuit),
 }
 
 func init() {
@@ -50,7 +50,6 @@ func init() {
 	meetingCreateCmd.MarkFlagRequired("startTime")
 	meetingCreateCmd.MarkFlagRequired("endTime")
 	meetingCreateCmd.MarkFlagRequired("participator")
-
 
 	meetingSetCmd.Flags().StringP("title", "t", "", "title of new meeting")
 	meetingSetCmd.Flags().StringP("startTime", "s", "", "start time of new meeting")
