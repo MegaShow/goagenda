@@ -10,30 +10,24 @@ import (
 var log = logrus.NewEntry(logrus.New())
 var file *os.File
 var verbose bool
-var label = make(map[string]string)
-var params string
+var username string
 
 // log verbose message, this won't store in log file
 func Verbose(msg string) {
 	if verbose {
-		fmt.Println(label["Verbose"] + msg)
+		fmt.Println(msg)
 	}
-}
-
-// log info message, this won't store in log file
-func Show(msg string) {
-	fmt.Println(label["Show"] + msg)
 }
 
 // log info message
 func Info(msg string) {
-	fmt.Println(label["Info"] + msg)
+	fmt.Println(msg)
 	log.Infoln(msg)
 }
 
 // log error message and exit with status 1
 func Error(msg string) {
-	fmt.Println(aurora.Red(label["Error"] + msg))
+	fmt.Println(aurora.Red(msg))
 	log.Errorln(msg)
 	Release()
 	os.Exit(1)
@@ -44,18 +38,19 @@ func Release() {
 }
 
 func SetUser(user string) {
+	if username == user {
+		return
+	}
+	username = user
 	log = log.WithFields(logrus.Fields{"user": user})
 }
 
-func AddParams(key, value string) {
-	if value == "" {
+func AddParams(key string, value interface{}) {
+	if key == "" {
 		return
 	}
-	if params != "" {
-		params += ","
-	}
-	params += key + ":" + value
-	log = log.WithFields(logrus.Fields{"params": params})
+	key = "param_" + key
+	log = log.WithFields(logrus.Fields{key: value})
 }
 
 func SetCommand(cmd string) {
@@ -64,15 +59,6 @@ func SetCommand(cmd string) {
 
 func SetVerbose(isVerbose bool) {
 	verbose = isVerbose
-}
-
-func SetLabel(isLabel bool) {
-	if isLabel {
-		label["Verbose"] = "[VERB] "
-		label["Show"] = "[SHOW] "
-		label["Info"] = "[INFO] "
-		label["Error"] = "[ERRO] "
-	}
 }
 
 func init() {

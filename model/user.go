@@ -7,6 +7,7 @@ import (
 type UserModel interface {
 	AddUser(user User)
 	GetUserByName(name string) User
+	SetUser(name, password, salt string, setPassword bool, email string, setEmail bool, telephone string, setTel bool)
 	DeleteUser(name string)
 }
 
@@ -37,6 +38,25 @@ func (m *UserDB) GetUserByName(name string) User {
 func (m *UserDB) AddUser(user User) {
 	m.isDirty = true
 	m.Data = append(m.Data, user)
+}
+
+func (m *UserDB) SetUser(name, password, salt string, setPassword bool, email string, setEmail bool, telephone string, setTel bool) {
+	m.isDirty = true
+	for index, item := range m.Data {
+		if strings.ToLower(item.Name) == strings.ToLower(name) {
+			if setPassword {
+				m.Data[index].Password = password
+				m.Data[index].Salt = salt
+			}
+			if setEmail {
+				m.Data[index].Email = email
+			}
+			if setTel {
+				m.Data[index].Telephone = telephone
+			}
+			break
+		}
+	}
 }
 
 func ReleaseUserModel() {

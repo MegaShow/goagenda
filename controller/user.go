@@ -2,39 +2,60 @@ package controller
 
 import (
 	"fmt"
-
 	"github.com/MegaShow/goagenda/lib/log"
 )
 
 type UserCtrl interface {
-	Delete()
-	List()
-	Set()
+	UserDelete()
+	UserList()
+	UserSet()
 }
 
-func (c *Controller) Delete() {
-	// TODO
-	userName := c.Srv.Admin().GetCurrentUserName()
-	if userName == "" {
-		log.Show("you should login")
+func (c *Controller) UserDelete() {
+	currentUser := c.Ctx.User.Get()
+	if currentUser == "" {
+		fmt.Println("you should login")
 		return
 	}
-	log.SetUser(userName)
-	c.Srv.User().DeleteUser(userName)
+
+	c.Srv.User().DeleteUser(currentUser)
+	c.Ctx.User.Set("")
 	log.Info("Delete account successfully")
-	c.Srv.Admin().SetCurrentUserName("")
 }
 
-func (c *Controller) List() {
-	fmt.Println("user:", c.Ctx.GetString("user"))
+func (c *Controller) UserList() {
 	// TODO
 }
 
-func (c *Controller) Set() {
-	fmt.Println("password:", c.Ctx.GetString("password"))
-	fmt.Println("email:", c.Ctx.GetString("email"))
-	fmt.Println("telephone:", c.Ctx.GetString("telephone"))
-	// TODO
+func (c *Controller) UserSet() {
+	password, setP := c.Ctx.GetSecretString("password")
+	email, setE := c.Ctx.GetString("email")
+	telephone, setT := c.Ctx.GetString("telephone")
+
+	if setP && password == "" {
+		log.Error("password empty")
+	}
+	verifyPassword(password)
+	verifyEmail(email)
+	verifyTelephone(telephone)
+	verifyEmptyArgs(c.Args)
+
+	log.Verbose("check status")
+	currentUser := c.Ctx.User.Get()
+	if currentUser == "" {
+		fmt.Println("you should login")
+		return
+	}
+
+	if !setP && !setE && !setT {
+		fmt.Println("set nothing")
+		return
+	}
+	err := c.Srv.User().Set(currentUser, password, setP, email, setE, telephone, setT)
+	if err != nil {
+		log.Error(err.Error())
+	}
+	log.Info("set user successfully")
 }
 
 func GetUserCtrl() UserCtrl {

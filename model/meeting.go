@@ -11,7 +11,7 @@ type MeetingDB struct {
 type Meeting struct {
 }
 
-var meetingDB = UserDB{Database: Database{schema: "Meeting"}}
+var meetingDB = MeetingDB{Database: Database{schema: "Meeting"}}
 
 func ReleaseMeetingModel() {
 	meetingDB.releaseModel(&meetingDB.Data)

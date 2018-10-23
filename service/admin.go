@@ -43,21 +43,20 @@ func (s *Service) Login(name, password string) error {
 	if checkPassword != user.Password {
 		return errors.New("invalid user name or password")
 	}
-	log.Verbose("check status")
-	status := s.DB.Status().GetStatus()
-	if status.Name == user.Name {
-		return errors.New("you are already logged in with this account")
-	} else if status.Name != "" {
-		return errors.New("you are already logged in with user '" + status.Name + "', please logout first")
-	}
 	return nil
 }
 
+// Don't call this method in other service's methods!!!
 func (s *Service) GetCurrentUserName() string {
 	return s.DB.Status().GetStatus().Name
 }
 
+// Don't call this method in other service's methods!!!
 func (s *Service) SetCurrentUserName(name string) error {
+	user := s.DB.User().GetUserByName(name)
+	if name != "" && user.Name == "" {
+		return errors.New("no such user")
+	}
 	s.DB.Status().SetStatus(model.Status{Name: name})
 	return nil
 }

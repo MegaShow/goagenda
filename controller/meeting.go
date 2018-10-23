@@ -5,24 +5,37 @@ import (
 )
 
 type MeetingCtrl interface {
+	MeetingCreate()
+	MeetingSet()
+	MeetingQuit()
 	DeleteMeeting()
 	Add()
 	ListMeeting()
 	Remove()
 }
 
+func (c *Controller) MeetingCreate() {}
+
+func (c *Controller) MeetingSet() {}
+
+func (c *Controller) MeetingQuit() {}
+
+
 func (c *Controller) DeleteMeeting() {
-	if c.Ctx.GetBool("all") == true {
+	isAll, _ := c.Ctx.GetBool("all")
+	title, _ := c.Ctx.GetString("title")
+	if isAll == true {
 		fmt.Println("delete all")
 	} else {
-		fmt.Println("title: ", c.Ctx.GetString("title"))
+		fmt.Println("title: ", title)
 	}
 	//TODO
 
 }
 
 func (c *Controller) Add() {
-	fmt.Println("title: ", c.Ctx.GetString("title"))
+	title, _ := c.Ctx.GetString("title")
+	fmt.Println("title: ", title)
 	participator := c.Args
 	if len(participator) == 0 {
 		fmt.Println(0)
@@ -33,14 +46,19 @@ func (c *Controller) Add() {
 }
 
 func (c *Controller) ListMeeting() {
-	fmt.Println("title: ", c.Ctx.GetString("title"))
-	fmt.Println("startTime: ", c.Ctx.GetString("startTime"))
-	fmt.Println("endTime: ", c.Ctx.GetString("endTime"))
-	fmt.Println("userName: ", c.Ctx.GetString("userName"))
+	title, _ := c.Ctx.GetString("title")
+	startTime, _ := c.Ctx.GetString("startTime")
+	endTime, _ := c.Ctx.GetString("endTime")
+	userName, _ := c.Ctx.GetString("userName")
+	fmt.Println("title: ", title)
+	fmt.Println("startTime: ", startTime)
+	fmt.Println("endTime: ", endTime)
+	fmt.Println("userName: ", userName)
 }
 
 func (c *Controller) Remove() {
-	fmt.Println("title: ", c.Ctx.GetString("title"))
+	title, _ := c.Ctx.GetString("title")
+	fmt.Println("title: ", title)
 	participator := c.Args
 	if len(participator) == 0 {
 		fmt.Println(0)
