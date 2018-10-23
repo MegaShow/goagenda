@@ -18,8 +18,8 @@ func (c *Controller) Register() {
 	email, _ := c.Ctx.GetString("email")
 	telephone, _ := c.Ctx.GetString("telephone")
 
-	verifyUser(user)
-	verifyPassword(password)
+	verifyNonNilUser(user)
+	verifyNonNilPassword(password)
 	verifyEmail(email)
 	verifyTelephone(telephone)
 
@@ -34,8 +34,8 @@ func (c *Controller) Login() {
 	user, _ := c.Ctx.GetString("user")
 	password, _ := c.Ctx.GetSecretString("password")
 
-	verifyUser(user)
-	verifyPassword(password)
+	verifyNonNilUser(user)
+	verifyNonNilPassword(password)
 
 	log.Verbose("check status")
 	currentUser := c.Ctx.User.Get()

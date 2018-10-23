@@ -5,7 +5,22 @@ import (
 	"github.com/logrusorgru/aurora"
 	"os"
 	"regexp"
+	"time"
 )
+
+func AssertTimeEqual(t1, t2 time.Time, msg string) {
+	if t1 != t2 {
+		fmt.Println(aurora.Red(msg))
+		os.Exit(2)
+	}
+}
+
+func AssertTimeNonEqual(t1, t2 time.Time, msg string) {
+	if t1 == t2 {
+		fmt.Println(aurora.Red(msg))
+		os.Exit(2)
+	}
+}
 
 func AssertReg(pattern, s, msg string) {
 	matched, err := regexp.MatchString(pattern, s)
@@ -15,7 +30,7 @@ func AssertReg(pattern, s, msg string) {
 	}
 }
 
-func AssertNil(s, msg string) {
+func AssertNonNil(s, msg string) {
 	if s == "" {
 		fmt.Println(aurora.Red(msg))
 		os.Exit(2)

@@ -14,7 +14,23 @@ type MeetingCtrl interface {
 	MeetingRemove()
 }
 
-func (c *Controller) MeetingCreate() {}
+func (c *Controller) MeetingCreate() {
+	title, _ := c.Ctx.GetString("title")
+	startTime, _ := c.Ctx.GetTime("startTime")
+	endTime, _ := c.Ctx.GetTime("endTime")
+	participators, _ := c.Ctx.GetStringSlice("participator")
+
+	verifyNonNilTitle(title)
+	verifyNonNilStartTime(startTime)
+	verifyNonNilEndTime(endTime)
+	verifyNonNilParticipator(participators)
+
+	if startTime.Before(endTime) {
+		// TODO
+	}
+
+	// TODO
+}
 
 func (c *Controller) MeetingSet() {}
 
