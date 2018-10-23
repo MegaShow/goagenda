@@ -33,6 +33,13 @@ $ agenda user set [-p <password>] [-e <email>] [-t <telephone>]
 
 ### Delete user
 
+```
+$ agenda user delete
+```
+
+- you should login
+- your account will be deleted，and you will logout.
+
 ### List users
 
 ### Create a meeting
