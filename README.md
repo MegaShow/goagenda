@@ -45,7 +45,7 @@ $ agenda user delete
 ### Create a meeting
 
 ```
-$ agenda meeting create -t <title> -s <startTime> -e <endTime> -p <participator> 
+$ agenda meeting create -t <title> -s <startTime> -e <endTime> -p <participators> 
 ```
 
 - You can use `meet` or `m` as aliases for `meeting`.
@@ -56,7 +56,7 @@ $ agenda meeting create -t <title> -s <startTime> -e <endTime> -p <participator>
 ### Set information of meeting
 
 ```
-$ agenda meeting set -t <title> [-s <startTime>] [-e <endTime>] [-p <participator>]
+$ agenda meeting set -t <title> [-s <startTime>] [-e <endTime>] [-p <participators>]
 ```
 
 - You can use `s` as an alias for `set`.

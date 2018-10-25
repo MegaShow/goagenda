@@ -44,3 +44,49 @@ time="2018-10-26T01:20:30+08:00" level=error msg="some participators or you are 
 time="2018-10-26T01:20:38+08:00" level=info msg="create meeting successfully" command=agenda.meeting.create param_endTime="2018-10-27/17:00" param_participator="[Cici Ella]" param_startTime="2018-10-27/16:00" param_title=me3 user=Duke
 time="2018-10-26T01:20:49+08:00" level=info msg="create meeting successfully" command=agenda.meeting.create param_endTime="2018-10-26/10:30" param_participator="[Ella]" param_startTime="2018-10-26/9:30" param_title=me4 user=Duke
 time="2018-10-26T01:20:58+08:00" level=info msg="user 'Duke' logged out" command=agenda.logout user=Duke
+time="2018-10-26T01:49:17+08:00" level=info msg="login successfully" command=agenda.login param_password="*" param_user=Amy user=Amy
+time="2018-10-26T01:49:58+08:00" level=info msg="user 'Amy' logged out" command=agenda.logout user=Amy
+time="2018-10-26T01:58:30+08:00" level=info msg="login successfully" command=agenda.login param_password="*" param_user=Duke user=Duke
+time="2018-10-26T01:58:56+08:00" level=error msg="title already exists" command=agenda.meeting.create param_endTime="2018-10-26/12:00" param_participator="[Amy Ella]" param_startTime="2018-10-26/10:5" param_title=me3 user=Duke
+time="2018-10-26T01:59:53+08:00" level=error msg="user 'Ella' is occupied during the time" command=agenda.meeting.create param_endTime="2018-10-26/10:30" param_participator="[Ella]" param_startTime="2018-10-26/7:30" param_title=me5 user=Duke
+time="2018-10-26T02:00:06+08:00" level=error msg="you are occupied during the time" command=agenda.meeting.create param_endTime="2018-10-26/9:0" param_participator="[Ella]" param_startTime="2018-10-26/7:30" param_title=me5 user=Duke
+time="2018-10-26T02:00:30+08:00" level=error msg="user 'Frank' doesn't exist" command=agenda.meeting.create param_endTime="2018-10-26/10:00" param_participator="[Bob Frank]" param_startTime="2018-10-26/09:00" param_title=me5 user=Duke
+time="2018-10-26T02:02:31+08:00" level=info msg="user 'Duke' logged out" command=agenda.logout user=Duke
+time="2018-10-26T02:08:43+08:00" level=error msg="user name already exists" command=agenda.register param_password="*" param_user=Amy
+time="2018-10-26T02:08:44+08:00" level=error msg="user name already exists" command=agenda.register param_password="*" param_user=Cici
+time="2018-10-26T02:08:44+08:00" level=error msg="user name already exists" command=agenda.register param_password="*" param_user=Duke
+time="2018-10-26T02:08:44+08:00" level=error msg="user name already exists" command=agenda.register param_password="*" param_user=Ella
+time="2018-10-26T02:08:45+08:00" level=info msg="login successfully" command=agenda.login param_password="*" param_user=Amy user=Amy
+time="2018-10-26T02:08:46+08:00" level=error msg="user 'Frank' doesn't exist" command=agenda.meeting.create param_endTime="2018-10-26/10:00" param_participator="[Bob Frank]" param_startTime="2018-10-26/09:00" param_title=me1 user=Amy
+time="2018-10-26T02:08:46+08:00" level=info msg="create meeting successfully" command=agenda.meeting.create param_endTime="2018-10-26/11:00" param_participator="[Bob Cici]" param_startTime="2018-10-26/09:00" param_title=me1 user=Amy
+time="2018-10-26T02:08:46+08:00" level=error msg="title already exists" command=agenda.meeting.create param_endTime="2018-10-26/15:00" param_participator="[Bob Cici]" param_startTime="2018-10-26/13:00" param_title=me1 user=Amy
+time="2018-10-26T02:08:46+08:00" level=error msg="user 'Bob' is occupied during the time" command=agenda.meeting.create param_endTime="2018-10-26/9:30" param_participator="[Bob Duke]" param_startTime="2018-10-26/08:00" param_title=me2 user=Amy
+time="2018-10-26T02:08:47+08:00" level=info msg="create meeting successfully" command=agenda.meeting.create param_endTime="2018-10-26/9:00" param_participator="[Bob Duke Duke Amy]" param_startTime="2018-10-26/08:00" param_title=me2 user=Amy
+time="2018-10-26T02:08:47+08:00" level=info msg="user 'Amy' logged out" command=agenda.logout user=Amy
+time="2018-10-26T02:08:47+08:00" level=info msg="login successfully" command=agenda.login param_password="*" param_user=Duke user=Duke
+time="2018-10-26T02:08:47+08:00" level=error msg="user 'Amy' is occupied during the time" command=agenda.meeting.create param_endTime="2018-10-26/12:00" param_participator="[Amy Ella]" param_startTime="2018-10-26/10:5" param_title=me3 user=Duke
+time="2018-10-26T02:08:47+08:00" level=info msg="create meeting successfully" command=agenda.meeting.create param_endTime="2018-10-27/17:00" param_participator="[Cici Ella]" param_startTime="2018-10-27/16:00" param_title=me3 user=Duke
+time="2018-10-26T02:08:47+08:00" level=info msg="create meeting successfully" command=agenda.meeting.create param_endTime="2018-10-26/10:30" param_participator="[Ella]" param_startTime="2018-10-26/9:30" param_title=me4 user=Duke
+time="2018-10-26T02:08:48+08:00" level=info msg="user 'Duke' logged out" command=agenda.logout user=Duke
+time="2018-10-26T02:13:12+08:00" level=error msg="user name already exists" command=agenda.register param_password="*" param_user=Bob
+time="2018-10-26T02:15:35+08:00" level=info msg="login successfully" command=agenda.login param_password="*" param_user=Duke user=Duke
+time="2018-10-26T02:15:38+08:00" level=error msg="title already exists" command=agenda.meeting.create param_endTime="2018-10-26/12:00" param_participator="[Ella]" param_startTime="2018-10-26/8:7" param_title=me3 user=Duke
+time="2018-10-26T02:16:01+08:00" level=error msg="user 'Ella' is occupied during the time" command=agenda.meeting.create param_endTime="2018-10-26/12:00" param_participator="[Ella]" param_startTime="2018-10-26/8:7" param_title=me5 user=Duke
+time="2018-10-26T02:19:40+08:00" level=info msg="register account successfully" command=agenda.register param_password="*" param_user=Amy
+time="2018-10-26T02:19:40+08:00" level=info msg="register account successfully" command=agenda.register param_password="*" param_user=Bob
+time="2018-10-26T02:19:40+08:00" level=info msg="register account successfully" command=agenda.register param_password="*" param_user=Cici
+time="2018-10-26T02:19:40+08:00" level=info msg="register account successfully" command=agenda.register param_password="*" param_user=Duke
+time="2018-10-26T02:19:40+08:00" level=info msg="register account successfully" command=agenda.register param_password="*" param_user=Ella
+time="2018-10-26T02:19:41+08:00" level=info msg="login successfully" command=agenda.login param_password="*" param_user=Amy user=Amy
+time="2018-10-26T02:19:43+08:00" level=error msg="user 'Frank' doesn't exist" command=agenda.meeting.create param_endTime="2018-10-26/10:00" param_participator="[Bob Frank]" param_startTime="2018-10-26/09:00" param_title=me1 user=Amy
+time="2018-10-26T02:19:43+08:00" level=info msg="create meeting successfully" command=agenda.meeting.create param_endTime="2018-10-26/11:00" param_participator="[Bob Cici]" param_startTime="2018-10-26/09:00" param_title=me1 user=Amy
+time="2018-10-26T02:19:43+08:00" level=error msg="title already exists" command=agenda.meeting.create param_endTime="2018-10-26/15:00" param_participator="[Bob Cici]" param_startTime="2018-10-26/13:00" param_title=me1 user=Amy
+time="2018-10-26T02:19:44+08:00" level=error msg="user 'Bob' is occupied during the time" command=agenda.meeting.create param_endTime="2018-10-26/9:30" param_participator="[Bob Duke]" param_startTime="2018-10-26/08:00" param_title=me2 user=Amy
+time="2018-10-26T02:19:44+08:00" level=info msg="create meeting successfully" command=agenda.meeting.create param_endTime="2018-10-26/9:00" param_participator="[Bob Duke Duke Amy]" param_startTime="2018-10-26/08:00" param_title=me2 user=Amy
+time="2018-10-26T02:19:44+08:00" level=info msg="user 'Amy' logged out" command=agenda.logout user=Amy
+time="2018-10-26T02:19:44+08:00" level=info msg="login successfully" command=agenda.login param_password="*" param_user=Duke user=Duke
+time="2018-10-26T02:19:45+08:00" level=error msg="user 'Amy' is occupied during the time" command=agenda.meeting.create param_endTime="2018-10-26/12:00" param_participator="[Amy Ella]" param_startTime="2018-10-26/10:5" param_title=me3 user=Duke
+time="2018-10-26T02:19:45+08:00" level=error msg="you are occupied during the time" command=agenda.meeting.create param_endTime="2018-10-26/12:00" param_participator="[Ella]" param_startTime="2018-10-26/8:7" param_title=me3 user=Duke
+time="2018-10-26T02:19:45+08:00" level=info msg="create meeting successfully" command=agenda.meeting.create param_endTime="2018-10-27/17:00" param_participator="[Cici Ella]" param_startTime="2018-10-27/16:00" param_title=me3 user=Duke
+time="2018-10-26T02:19:46+08:00" level=info msg="create meeting successfully" command=agenda.meeting.create param_endTime="2018-10-26/10:30" param_participator="[Ella]" param_startTime="2018-10-26/9:30" param_title=me4 user=Duke
+time="2018-10-26T02:19:47+08:00" level=info msg="user 'Duke' logged out" command=agenda.logout user=Duke

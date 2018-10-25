@@ -46,7 +46,7 @@ $ agenda user delete
 ### 创建会议
 
 ```
-$ agenda meeting create -t <title> -s <startTime> -e <endTime> -p <participator>
+$ agenda meeting create -t <title> -s <startTime> -e <endTime> -p <participators>
 ```
 
 - 你可以使用 `meet` 或 `m` 代替 `meeting` 。
@@ -57,7 +57,7 @@ $ agenda meeting create -t <title> -s <startTime> -e <endTime> -p <participator>
 ### 修改会议信息
 
 ```
-$ agenda meeting set -t <title> [-s <startTime>] [-e <endTime>] [-p <participator>]
+$ agenda meeting set -t <title> [-s <startTime>] [-e <endTime>] [-p <participators>]
 ```
 
 - 你可以使用 `s` 代替 `set` 。

@@ -11,16 +11,16 @@ type MeetingService interface {
 	CreateMeeting(title string, startTime time.Time, endTime time.Time, initiator string, participators []string) error
 }
 
-func CheckFreeParticipators(participators []string, initiator string, occupiedParticipators map[string]bool) bool{
+func CheckFreeParticipators(participators []string, initiator string, occupiedParticipators map[string]bool) (bool, string){
 	newParticipators := participators
 	newParticipators = append(newParticipators, initiator)
 	for _, participator := range newParticipators {
 		_, occupied := occupiedParticipators[participator]
 		if occupied  {
-				return false
+				return false, participator
 		}
 	}
-	return true
+	return true, ""
 }
 
 func RemoveDuplicatedParticipators(participators []string, initiator string) []string{
@@ -47,14 +47,21 @@ func (s *Service) CreateMeeting(title string, startTime time.Time, endTime time.
 	emptyUser := model.User{}
 	for _, participator := range participators {
 		if s.DB.User().GetUserByName(participator) == emptyUser {
-			return errors.New("some participator doesn't exist")
+			return errors.New("user '" + participator + "' doesn't exist")
 		}
 	}
 
 	log.Verbose("check if some participator is occupied")
 	occupiedParticipators := s.DB.Meeting().GetOccupiedParticipators(startTime, endTime)
-	if !CheckFreeParticipators(participators, initiator, occupiedParticipators) {
-		return errors.New("some participators or you are occupied during the time")
+	free, occupiedOne := CheckFreeParticipators(participators, initiator, occupiedParticipators)
+	if !free {
+		var begin string
+		if initiator == occupiedOne {
+			begin = "you are"
+		} else {
+			begin = "user '" + occupiedOne + "' is"
+		}
+		return errors.New(begin + " occupied during the time")
 	}
 
 	log.Verbose("remove duplicated participators")
