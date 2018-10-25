@@ -49,7 +49,7 @@ func (c *Controller) UserSet() {
 		fmt.Println("set nothing")
 		return
 	}
-	err := c.Srv.User().Set(currentUser, password, setP, email, setE, telephone, setT)
+	err := c.Srv.User().SetUser(currentUser, password, setP, email, setE, telephone, setT)
 	if err != nil {
 		log.Error(err.Error())
 	}

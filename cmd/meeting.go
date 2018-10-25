@@ -45,7 +45,7 @@ var meetingDeleteCmd = &cobra.Command{
 	Short:   "Delete your meeting",
 	Long:    "Delete your meeting",
 	Args:    cobra.NoArgs,
-	Run:     wrapper(controller.GetMeetingCtrl().DeleteMeeting),
+	Run:     wrapper(controller.GetMeetingCtrl().MeetingDelete),
 }
 
 var meetingAddCmd = &cobra.Command{
