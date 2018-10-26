@@ -45,17 +45,21 @@ $ agenda user delete
 ### Create a meeting
 
 ```
-$ agenda meeting create -t <title> -p <participator> -s <startTime> -e <endTime>
+$ agenda meeting create -t <title> -s <startTime> -e <endTime> -p <participators> 
 ```
 
+- You can use `meet` or `m` as aliases for `meeting`.
+- You can use `c` as an alias for `create`.
 - If you want to add more than one participator, please input like `-p p1,p2,...,pN` .
-- Input time like `year-month-day-hour-minute` .
+- Input time like `YYYY-MM-DD/hh:mm` or `YYYY-M-D/h:m` , using 24-hour.
 
 ### Set information of meeting
 
 ```
-$ agenda meeting set -t <title> [-p <participator>] [-s <startTime>] [-e <endTime>]
+$ agenda meeting set -t <title> [-s <startTime>] [-e <endTime>] [-p <participators>]
 ```
+
+- You can use `s` as an alias for `set`.
 
 ### Add or remove participator
 

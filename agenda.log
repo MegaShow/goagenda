@@ -1,5 +1,0 @@
-time="2018-10-23T17:06:17+08:00" level=error msg="you are already logged in with this account" command=agenda.login param_password="*" param_user=MegaShow user=MegaShow
-time="2018-10-23T17:06:26+08:00" level=info msg="user 'MegaShow' logged out" command=agenda.logout user=MegaShow
-time="2018-10-23T17:06:32+08:00" level=info msg="login successfully" command=agenda.login param_password="*" param_user=MegaShow user=MegaShow
-time="2018-10-23T17:14:59+08:00" level=info msg="Delete account successfully" command=agenda.user.delete user=MegaShow
-time="2018-10-23T19:09:24+08:00" level=error msg="you are already logged in with this account" command=agenda.login param_password="*" param_user=

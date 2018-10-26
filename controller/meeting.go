@@ -2,13 +2,14 @@ package controller
 
 import (
 	"fmt"
+	"github.com/MegaShow/goagenda/lib/log"
 )
 
 type MeetingCtrl interface {
 	MeetingCreate()
 	MeetingSet()
 	MeetingQuit()
-	DeleteMeeting()
+	MeetingDelete()
 	MeetingAdd()
 	MeetingList()
 	MeetingRemove()
@@ -25,18 +26,31 @@ func (c *Controller) MeetingCreate() {
 	verifyNonNilEndTime(endTime)
 	verifyNonNilParticipator(participators)
 
-	if startTime.Before(endTime) {
-		// TODO
+	log.Verbose("check status")
+	currentUser := c.Ctx.User.Get()
+	if currentUser == "" {
+		fmt.Println("you should login")
+		return
 	}
 
-	// TODO
+	log.Verbose("check time")
+	if !startTime.Before(endTime) {
+		fmt.Println("start time should be before end time")
+		return
+	}
+
+	err := ctrl.Srv.Meeting().CreateMeeting(title, startTime, endTime, currentUser, participators)
+	if err != nil {
+		log.Error(err.Error())
+	}
+	log.Info("create meeting successfully")
 }
 
 func (c *Controller) MeetingSet() {}
 
 func (c *Controller) MeetingQuit() {}
 
-func (c *Controller) DeleteMeeting() {
+func (c *Controller) MeetingDelete() {
 	isAll, _ := c.Ctx.GetBool("all")
 	title, _ := c.Ctx.GetString("title")
 	if isAll == true {
