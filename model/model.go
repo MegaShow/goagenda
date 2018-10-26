@@ -54,8 +54,15 @@ func (m *Database) releaseModel(data interface{}) {
 			os.Exit(2)
 		}
 		defer f.Close()
+		m.releaseModelWithFile(data, f)
+		m.isDirty = false
+	}
+}
+
+func (m *Database) releaseModelWithFile(data interface{}, f *os.File) {
+	if m.isDirty == true {
 		encoder := json.NewEncoder(f)
-		err = encoder.Encode(data)
+		err := encoder.Encode(data)
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(2)

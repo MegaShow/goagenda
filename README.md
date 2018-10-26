@@ -8,7 +8,7 @@ Agenda is a meeting management system.
 [![Teambition](https://img.shields.io/badge/teambition-tasks-ff69b4.svg)](https://www.teambition.com/project/5bc6ffbaf10ae90018184bd0/)
 [![GoDoc](https://godoc.org/github.com/MegaShow/goagenda?status.svg)](https://godoc.org/github.com/MegaShow/goagenda)
 
-\[English\]  \[[中文](README_zh.md)\]  \[[Contributing](CONTRIBUTING.md)\]
+\[English\]  \[[中文](README_zh.md)\]  \[[Contributing](CONTRIBUTING.md)\] \[[Test Case](test/TEST_CASE.md)\]
 
 ## Quick Start
 
@@ -37,8 +37,8 @@ $ agenda user set [-p <password>] [-e <email>] [-t <telephone>]
 $ agenda user delete -u <user> -p <password>
 ```
 
-- you should login
-- your account will be deleted，and you will logout.
+- You should login.
+- Your account will be deleted，and you will logout.
 
 ### List users
 
@@ -46,8 +46,8 @@ $ agenda user delete -u <user> -p <password>
 $ agenda user list [-u <user>]
 ```
 
- - list the details of the user you input
- - if you don't input the username, you will get all users'.
+ - List the details of the user you input
+ - If you don't input the username, you will get all users' information.
 
 ### Create a meeting
 

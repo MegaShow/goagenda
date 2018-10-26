@@ -8,7 +8,7 @@ Agenda是一个基于命令行的会议管理系统。
 [![Teambition](https://img.shields.io/badge/teambition-tasks-ff69b4.svg)](https://www.teambition.com/project/5bc6ffbaf10ae90018184bd0/)
 [![GoDoc](https://godoc.org/github.com/MegaShow/goagenda?status.svg)](https://godoc.org/github.com/MegaShow/goagenda)
 
-\[[English](README.md)\]  [中文]  \[[Contributing](CONTRIBUTING.md)\]
+\[[English](README.md)\]  [中文]  \[[Contributing](CONTRIBUTING.md)\] \[[Test Case](test/TEST_CASE.md)\]
 
 ## 快速入门
 

@@ -1,6 +1,7 @@
 package model
 
 import (
+	"os"
 	"time"
 )
 
@@ -52,9 +53,12 @@ func (m *MeetingDB) CreateMeeting(meeting Meeting) {
 	m.Data = append(m.Data, meeting)
 }
 
-
 func ReleaseMeetingModel() {
 	meetingDB.releaseModel(&meetingDB.Data)
+}
+
+func ReleaseMeetingModelWithFile(f *os.File) {
+	meetingDB.releaseModelWithFile(&meetingDB.Data, f)
 }
 
 func (m *Manager) Meeting() MeetingModel {

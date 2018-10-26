@@ -2,7 +2,6 @@ package controller
 
 import (
 	"fmt"
-
 	"github.com/MegaShow/goagenda/lib/log"
 )
 
@@ -17,7 +16,6 @@ func (c *Controller) UserDelete() {
 	userName, _ := c.Ctx.GetString("username")
 	verifyUser(userName)
 	verifyPassword(password)
-	verifyEmptyArgs(c.Args)
 
 	currentUser := c.Ctx.User.Get()
 	if currentUser == "" {
@@ -38,7 +36,6 @@ func (c *Controller) UserDelete() {
 }
 
 func (c *Controller) UserList() {
-	// TODO
 	currentUser := c.Ctx.User.Get()
 	if currentUser == "" {
 		fmt.Println("you should login")
@@ -50,7 +47,6 @@ func (c *Controller) UserList() {
 		fmt.Println(c.Srv.User().GetAllUsers())
 	} else {
 		verifyUser(userName)
-		verifyEmptyArgs(c.Args)
 		userDetail, err := c.Srv.User().GetUserDetail(userName)
 		if err != nil {
 			log.Error(err.Error())

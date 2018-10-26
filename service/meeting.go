@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/MegaShow/goagenda/lib/log"
 	"github.com/MegaShow/goagenda/model"
+	"sort"
 	"time"
 )
 
@@ -44,9 +45,8 @@ func (s *Service) CreateMeeting(title string, startTime time.Time, endTime time.
 	}
 
 	log.Verbose("check if some participator doesn't exist")
-	emptyUser := model.User{}
 	for _, participator := range participators {
-		if s.DB.User().GetUserByName(participator) == emptyUser {
+		if s.DB.User().GetUserByName(participator).Name == "" {
 			return errors.New("user '" + participator + "' doesn't exist")
 		}
 	}
@@ -66,6 +66,7 @@ func (s *Service) CreateMeeting(title string, startTime time.Time, endTime time.
 
 	log.Verbose("remove duplicated participators")
 	finalParticipators := RemoveDuplicatedParticipators(participators, initiator)
+	sort.Strings(finalParticipators)
 
 	s.DB.Meeting().CreateMeeting(model.Meeting{
 		Title: 			title,
