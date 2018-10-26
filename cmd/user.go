@@ -47,4 +47,9 @@ func init() {
 	userSetCmd.Flags().StringP("password", "p", "", "new password")
 	userSetCmd.Flags().StringP("email", "e", "", "new email")
 	userSetCmd.Flags().StringP("telephone", "t", "", "new telephone")
+
+	userDeleteCmd.Flags().StringP("username", "u", "", "user name")
+	userDeleteCmd.Flags().StringP("password", "p", "", "the user password")
+	userDeleteCmd.MarkFlagRequired("username")
+	userDeleteCmd.MarkFlagRequired("password")
 }

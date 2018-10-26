@@ -34,14 +34,20 @@ $ agenda user set [-p <password>] [-e <email>] [-t <telephone>]
 ### 删除用户
 
 ```
-$ agenda user delete
+$ agenda user delete -u <user> -p <password>
 ```
 
-- 必须处于登陆状态才能删除
+- 你输入用户名和密码必须是你的现在登陆的用户名和密码
 - 你将会删除你自己的账户
 - 删除用户后，你将登出改账户
 
 ### 显示所有用户
+
+```
+$ agenda user list [-u <user>]
+```
+ - 你将会获得你输入的用户的详情（包括用户名、邮箱和联系电话）
+ - 如果你不输入用户名称，你将会获得所有用户的详情
 
 ### 创建会议
 

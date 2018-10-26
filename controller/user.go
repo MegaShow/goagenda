@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+
 	"github.com/MegaShow/goagenda/lib/log"
 )
 
@@ -12,19 +13,50 @@ type UserCtrl interface {
 }
 
 func (c *Controller) UserDelete() {
+	password, _ := c.Ctx.GetSecretString("password")
+	userName, _ := c.Ctx.GetString("username")
+	verifyUser(userName)
+	verifyPassword(password)
+	verifyEmptyArgs(c.Args)
+
 	currentUser := c.Ctx.User.Get()
 	if currentUser == "" {
 		fmt.Println("you should login")
 		return
 	}
 
-	c.Srv.User().DeleteUser(currentUser)
+	if currentUser != userName {
+		log.Error("you are already logged in with user '" + currentUser + "', please logout first")
+	}
+
+	err := c.Srv.User().DeleteUser(currentUser, password)
+	if err != nil {
+		log.Error(err.Error())
+	}
 	c.Ctx.User.Set("")
 	log.Info("Delete account successfully")
 }
 
 func (c *Controller) UserList() {
 	// TODO
+	currentUser := c.Ctx.User.Get()
+	if currentUser == "" {
+		fmt.Println("you should login")
+		return
+	}
+
+	userName, setN := c.Ctx.GetString("user")
+	if !setN {
+		fmt.Println(c.Srv.User().GetAllUsers())
+	} else {
+		verifyUser(userName)
+		verifyEmptyArgs(c.Args)
+		userDetail, err := c.Srv.User().GetUserDetail(userName)
+		if err != nil {
+			log.Error(err.Error())
+		}
+		fmt.Println(userDetail)
+	}
 }
 
 func (c *Controller) UserSet() {
