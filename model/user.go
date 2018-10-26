@@ -9,6 +9,7 @@ type UserModel interface {
 	GetUserByName(name string) User
 	SetUser(name, password, salt string, setPassword bool, email string, setEmail bool, telephone string, setTel bool)
 	DeleteUser(name string)
+	GetAllUser() []User
 }
 
 type UserDB struct {
@@ -67,6 +68,10 @@ func (m *UserDB) DeleteUser(name string) {
 			return
 		}
 	}
+}
+
+func (m *UserDB) GetAllUser() []User {
+	return m.Data
 }
 
 func ReleaseUserModel() {
