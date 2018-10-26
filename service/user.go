@@ -8,13 +8,13 @@ import (
 )
 
 type UserService interface {
-	Set(name, password string, setPassword bool, email string, setEmail bool, telephone string, setTel bool) error
 	DeleteUser(name string, password string) error
 	GetAllUsers() string
 	GetUserDetail(name string) (string, error)
+	SetUser(name, password string, setPassword bool, email string, setEmail bool, telephone string, setTel bool) error
 }
 
-func (s *Service) Set(name, password string, setPassword bool, email string, setEmail bool, telephone string, setTel bool) error {
+func (s *Service) SetUser(name, password string, setPassword bool, email string, setEmail bool, telephone string, setTel bool) error {
 	log.Verbose("set logged user")
 	salt := ""
 	if setPassword {

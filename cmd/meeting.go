@@ -17,6 +17,7 @@ var meetingCreateCmd = &cobra.Command{
 	Aliases: []string{"c"},
 	Short:   "Create a meeting",
 	Long:    "Create a meeting",
+	Args:    cobra.NoArgs,
 	Run:     wrapper(controller.GetMeetingCtrl().MeetingCreate),
 }
 
@@ -25,6 +26,7 @@ var meetingSetCmd = &cobra.Command{
 	Aliases: []string{"s"},
 	Short:   "Set information of a meeting",
 	Long:    "Set information of a meeting",
+	Args:    cobra.NoArgs,
 	Run:     wrapper(controller.GetMeetingCtrl().MeetingSet),
 }
 
@@ -33,6 +35,7 @@ var meetingQuitCmd = &cobra.Command{
 	Aliases: []string{"q"},
 	Short:   "Quit a meeting",
 	Long:    "Quit a meeting",
+	Args:    cobra.NoArgs,
 	Run:     wrapper(controller.GetMeetingCtrl().MeetingQuit),
 }
 
@@ -41,7 +44,8 @@ var meetingDeleteCmd = &cobra.Command{
 	Aliases: []string{"d"},
 	Short:   "Delete your meeting",
 	Long:    "Delete your meeting",
-	Run:     wrapper(controller.GetMeetingCtrl().DeleteMeeting),
+	Args:    cobra.NoArgs,
+	Run:     wrapper(controller.GetMeetingCtrl().MeetingDelete),
 }
 
 var meetingAddCmd = &cobra.Command{
@@ -50,7 +54,7 @@ var meetingAddCmd = &cobra.Command{
 	Short:   "Add your meeting participator",
 	Long:    "Add your meeting participator",
 	Args:    cobra.MinimumNArgs(1),
-	Run:     wrapper(controller.GetMeetingCtrl().Add),
+	Run:     wrapper(controller.GetMeetingCtrl().MeetingAdd),
 }
 
 var meetingListCmd = &cobra.Command{
@@ -58,7 +62,8 @@ var meetingListCmd = &cobra.Command{
 	Aliases: []string{"l"},
 	Short:   "List your meeting",
 	Long:    "List your meeting",
-	Run:     wrapper(controller.GetMeetingCtrl().ListMeeting),
+	Args:    cobra.NoArgs,
+	Run:     wrapper(controller.GetMeetingCtrl().MeetingList),
 }
 
 var meetingRemoveCmd = &cobra.Command{
@@ -67,12 +72,12 @@ var meetingRemoveCmd = &cobra.Command{
 	Short:   "Remove your meeting participator",
 	Long:    "Remove your meeting participator",
 	Args:    cobra.MinimumNArgs(1),
-	Run:     wrapper(controller.GetMeetingCtrl().Remove),
+	Run:     wrapper(controller.GetMeetingCtrl().MeetingRemove),
 }
 
 func init() {
 	rootCmd.AddCommand(meetingRootCmd)
-	
+
 	meetingRootCmd.AddCommand(meetingCreateCmd)
 	meetingRootCmd.AddCommand(meetingSetCmd)
 	meetingRootCmd.AddCommand(meetingQuitCmd)
@@ -98,7 +103,6 @@ func init() {
 
 	meetingQuitCmd.Flags().StringP("title", "t", "", "title of new meeting")
 	meetingQuitCmd.MarkFlagRequired("title")
-
 
 	meetingListCmd.Flags().StringP("title", "t", "", "the meeting title")
 	meetingListCmd.Flags().StringP("startTime", "s", "", "the meeting start time")

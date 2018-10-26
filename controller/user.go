@@ -64,13 +64,11 @@ func (c *Controller) UserSet() {
 	email, setE := c.Ctx.GetString("email")
 	telephone, setT := c.Ctx.GetString("telephone")
 
-	if setP && password == "" {
-		log.Error("password empty")
+	if setP {
+		verifyNonNilPassword(password)
 	}
-	verifyPassword(password)
 	verifyEmail(email)
 	verifyTelephone(telephone)
-	verifyEmptyArgs(c.Args)
 
 	log.Verbose("check status")
 	currentUser := c.Ctx.User.Get()
@@ -83,7 +81,7 @@ func (c *Controller) UserSet() {
 		fmt.Println("set nothing")
 		return
 	}
-	err := c.Srv.User().Set(currentUser, password, setP, email, setE, telephone, setT)
+	err := c.Srv.User().SetUser(currentUser, password, setP, email, setE, telephone, setT)
 	if err != nil {
 		log.Error(err.Error())
 	}

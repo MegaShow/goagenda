@@ -52,17 +52,21 @@ $ agenda user list [-u <user>]
 ### 创建会议
 
 ```
-$ agenda meeting create -t <title> -p <participator> -s <startTime> -e <endTime>
+$ agenda meeting create -t <title> -s <startTime> -e <endTime> -p <participators>
 ```
 
-- 如果你想添加多个与会者，请像这样输入：`-p p1,p2,...,pN` 
-- 你可以这样输入时间： `year-month-day-hour-minute` 
+- 你可以使用 `meet` 或 `m` 代替 `meeting` 。
+- 你可以使用 `c` 代替 `create` 。
+- 如果你想添加多个与会者，请像这样输入：`-p p1,p2,...,pN` 。
+- 你可以这样输入时间： `YYYY-MM-DD/hh:mm` 或 `YYYY-M-D/h:m` ，使用24小时制。
 
 ### 修改会议信息
 
 ```
-$ agenda meeting set -t <title> [-p <participator>] [-s <startTime>] [-e <endTime>]
+$ agenda meeting set -t <title> [-s <startTime>] [-e <endTime>] [-p <participators>]
 ```
+
+- 你可以使用 `s` 代替 `set` 。
 
 ### 添加或移除与会者
 

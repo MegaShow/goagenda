@@ -18,11 +18,10 @@ func (c *Controller) Register() {
 	email, _ := c.Ctx.GetString("email")
 	telephone, _ := c.Ctx.GetString("telephone")
 
-	verifyUser(user)
-	verifyPassword(password)
+	verifyNonNilUser(user)
+	verifyNonNilPassword(password)
 	verifyEmail(email)
 	verifyTelephone(telephone)
-	verifyEmptyArgs(c.Args)
 
 	err := c.Srv.Admin().Register(user, password, email, telephone)
 	if err != nil {
@@ -35,9 +34,8 @@ func (c *Controller) Login() {
 	user, _ := c.Ctx.GetString("user")
 	password, _ := c.Ctx.GetSecretString("password")
 
-	verifyUser(user)
-	verifyPassword(password)
-	verifyEmptyArgs(c.Args)
+	verifyNonNilUser(user)
+	verifyNonNilPassword(password)
 
 	log.Verbose("check status")
 	currentUser := c.Ctx.User.Get()
@@ -59,8 +57,6 @@ func (c *Controller) Login() {
 }
 
 func (c *Controller) Logout() {
-	verifyEmptyArgs(c.Args)
-
 	currentUser := c.Ctx.User.Get()
 	if currentUser == "" {
 		fmt.Println("not logged user")
@@ -71,8 +67,6 @@ func (c *Controller) Logout() {
 }
 
 func (c *Controller) GetStatus() {
-	verifyEmptyArgs(c.Args)
-
 	currentUser := c.Ctx.User.Get()
 	if currentUser == "" {
 		fmt.Println("not logged user")
