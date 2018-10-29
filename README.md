@@ -72,11 +72,23 @@ $ agenda meeting set -t <title> [-s <startTime>] [-e <endTime>] [-p <participato
 
 ### Delete a meeting
 
+```
+$ agenda meeting delete [-t <title> | -a]
+```
+
+* You can use `d` as an alias for `delete`.
+* You must be the initiator of this meeting.
+* When set `-a`, all the meetings you initiate will be deleted.
+
 ### Quit a meeting
 
 ```
 $ agenda meeting quit -t <title>
 ```
+
+* You can use `q` as an alias for `quit`.
+* You can't be the initiator of this meeting.
+* If this meeting has no participator after you quit, it will be deleted.
 
 ### List meetings
 

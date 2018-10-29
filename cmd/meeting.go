@@ -110,7 +110,7 @@ func init() {
 	meetingListCmd.Flags().StringP("userName", "u", "", "the user name of the host of the meeting")
 	meetingListCmd.MarkFlagRequired("title")
 
-	meetingDeleteCmd.Flags().StringP("title", "t", "", "new password")
+	meetingDeleteCmd.Flags().StringP("title", "t", "", "meeting title")
 	meetingDeleteCmd.Flags().BoolP("all", "a", false, "delete all meeting")
 
 	meetingAddCmd.Flags().StringP("title", "t", "", "meeting title")

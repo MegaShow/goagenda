@@ -72,11 +72,23 @@ $ agenda meeting set -t <title> [-s <startTime>] [-e <endTime>] [-p <participato
 
 ### 删除会议
 
+```
+$ agenda meeting delete [-t <title> | -a]
+```
+
+* 你可以使用`d`代替`delete`。
+* 你必须是该会议的发起者。
+* 当设置了`-a`时，你所发起的所有会议都会被删除。
+
 ###  退出会议
 
 ```
 $ agenda meeting quit -t <title>
 ```
+
+* 你可以使用`q`代替`quit`。
+* 你不能是该会议的发起者。
+* 如果你退出会议之后，该会议的参与人数为0，那该会议将被删除。
 
 ### 查询会议
 
@@ -85,3 +97,4 @@ $ agenda meeting quit -t <title>
 ## 协议
 
 使用Apache License 2.0协议。
+

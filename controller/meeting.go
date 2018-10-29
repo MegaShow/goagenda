@@ -52,13 +52,37 @@ func (c *Controller) MeetingQuit() {}
 
 func (c *Controller) MeetingDelete() {
 	isAll, _ := c.Ctx.GetBool("all")
-	title, _ := c.Ctx.GetString("title")
-	if isAll == true {
-		fmt.Println("delete all")
-	} else {
-		fmt.Println("title: ", title)
+	title, setT := c.Ctx.GetString("title")
+
+	if isAll && setT {
+		fmt.Println("flags -a and -t cannot be set together")
+		return
+	} else if setT {
+		verifyNonNilTitle(title)
+	} else if !isAll {
+		c.Cmd.Usage()
+		return
 	}
-	//TODO
+
+	currentUser := c.Ctx.User.Get()
+	if currentUser == "" {
+		fmt.Println("you should login")
+		return
+	}
+
+	if isAll == true {
+		err := c.Srv.Meeting().DeleteMeeting(currentUser, "")
+		if err != nil {
+			log.Error(err.Error())
+		}
+		log.Info("delete all meetings successfully")
+	} else {
+		err := c.Srv.Meeting().DeleteMeeting(currentUser, title)
+		if err != nil {
+			log.Error(err.Error())
+		}
+		log.Info("delete meeting \"" + title + "\" successfully")
+	}
 }
 
 func (c *Controller) MeetingAdd() {
