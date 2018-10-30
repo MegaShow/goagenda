@@ -1,4 +1,7 @@
-LogFile: log.txt
+Log:
+  IsOpen: true
+  Path: .
+  File: agenda.log
 Database:
   Path: data
   UserFile: user.json

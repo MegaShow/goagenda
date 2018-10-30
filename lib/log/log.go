@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/logrusorgru/aurora"
 	"github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 	"os"
 )
 
@@ -61,9 +62,9 @@ func SetVerbose(isVerbose bool) {
 	verbose = isVerbose
 }
 
-func init() {
+func Init() {
 	log.Logger.SetFormatter(&logrus.TextFormatter{})
-	f, err := os.OpenFile("agenda.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	f, err := os.OpenFile(viper.GetString("Log.Path")+string(os.PathSeparator)+viper.GetString("Log.File"), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(2)

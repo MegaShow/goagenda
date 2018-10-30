@@ -1,8 +1,12 @@
 package controller
 
 import (
+	"bufio"
 	"fmt"
 	"github.com/MegaShow/goagenda/lib/log"
+	"github.com/logrusorgru/aurora"
+	"github.com/spf13/viper"
+	"os"
 )
 
 type AdminCtrl interface {
@@ -10,6 +14,7 @@ type AdminCtrl interface {
 	Login()
 	Logout()
 	Register()
+	Log()
 }
 
 func (c *Controller) Register() {
@@ -73,6 +78,43 @@ func (c *Controller) GetStatus() {
 	} else {
 		fmt.Println("user '" + currentUser + "' logged in")
 	}
+}
+
+func (c *Controller) Log() {
+	isOpen := viper.GetBool("Log.IsOpen")
+	if isOpen {
+		fmt.Println(aurora.Red("warning!!!"))
+		fmt.Println("you are trying to access the log file")
+		fmt.Println("if you don't want that everyone can access log file, please set 'false' in the config file")
+		fmt.Println()
+	} else {
+		fmt.Println(aurora.Red("permission denied"))
+		return
+	}
+	fmt.Println("print only 10 lines, more in file")
+	fmt.Println()
+	f, err := os.Open(viper.GetString("Log.Path") + string(os.PathSeparator) + viper.GetString("Log.File"))
+	if err != nil {
+		fmt.Println(err.Error())
+		os.Exit(2)
+	}
+	defer f.Close()
+	reader := bufio.NewReader(f)
+	var output []string
+	for {
+		line, err := reader.ReadSlice('\n')
+		if err != nil {
+			break
+		}
+		output = append(output, string(line))
+		if len(output) > 10 {
+			output = append(output[len(output)-10:])
+		}
+	}
+	for _, item := range output {
+		fmt.Print(item)
+	}
+	fmt.Println()
 }
 
 func GetAdminCtrl() AdminCtrl {

@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"os"
+	"strings"
 )
 
 var cfgFile string
@@ -39,7 +40,7 @@ func init() {
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
-	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "config file (default is $HOME/.agenda.yaml)")
+	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "config file (default is $AGENDA_HOME/.agenda.yaml)")
 	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "display the verbose information")
 }
 
@@ -59,6 +60,7 @@ func initConfig() {
 		// Search config in home directory with name ".agenda" (without extension).
 		viper.AddConfigPath(home)
 		viper.AddConfigPath(".")
+		viper.AddConfigPath(home + string(os.PathSeparator) + "agenda")
 		viper.SetConfigName(".agenda")
 	}
 
@@ -69,6 +71,11 @@ func initConfig() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+
+	arr := strings.Split(viper.ConfigFileUsed(), string(os.PathSeparator))
+	dir := strings.Join(arr[:len(arr)-1], string(os.PathSeparator)) + string(os.PathSeparator)
+	viper.Set("Log.Path", dir+viper.GetString("Log.Path"))
+	viper.Set("Database.Path", dir+viper.GetString("Database.Path"))
 }
 
 func initLog() {
