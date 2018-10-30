@@ -11,6 +11,7 @@ type MeetingModel interface {
 	CreateMeeting(meeting Meeting)
 	DeleteMeetingByTitle(title string) bool
 	DeleteMeetingsByInitiator(name string) int
+	QuitMeeting(title, user string) bool
 }
 
 type MeetingDB struct {
@@ -76,6 +77,22 @@ func (m *MeetingDB) DeleteMeetingsByInitiator(name string) (count int) {
 		}
 	}
 	return
+}
+
+func (m *MeetingDB) QuitMeeting(title, user string) bool {
+	m.isDirty = true
+	for i := 0; i < len(m.Data); i++ {
+		if m.Data[i].Title == title {
+			for j := 0; j < len(m.Data[i].Participators); j++ {
+				if m.Data[i].Participators[j] == user {
+					m.Data[i].Participators = append(m.Data[i].Participators[:j], m.Data[i].Participators[j+1:]...)
+					return true
+				}
+			}
+			return false
+		}
+	}
+	return false
 }
 
 func ReleaseMeetingModel() {

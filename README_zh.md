@@ -68,7 +68,18 @@ $ agenda meeting set -t <title> [-s <startTime>] [-e <endTime>] [-p <participato
 
 - 你可以使用 `s` 代替 `set` 。
 
-### 添加或移除与会者
+### 添加与会者
+
+### 移除与会者
+
+```
+$ agenda meeting remove -t <title> <participators list>
+```
+
+* 你可以使用`r`代替`remove`。
+* 你必须是该会议的发起者。
+* 一旦列表中存在非法的用户名(不存在或不是该会议的与会者)，移除操作将被取消。
+* 如果你移除与会者之后，该会议的参与人数为0，那该会议将被删除。
 
 ### 删除会议
 

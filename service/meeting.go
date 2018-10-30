@@ -10,7 +10,9 @@ import (
 
 type MeetingService interface {
 	CreateMeeting(title string, startTime time.Time, endTime time.Time, initiator string, participators []string) error
-	DeleteMeeting(user string, title string) error
+	DeleteMeeting(user, title string) error
+	QuitMeeting(user, title string) error
+	RemoveParticipators(user, title string, participators []string) error
 }
 
 func CheckFreeParticipators(participators []string, initiator string, occupiedParticipators map[string]bool) (bool, string) {
@@ -79,21 +81,49 @@ func (s *Service) CreateMeeting(title string, startTime time.Time, endTime time.
 	return nil
 }
 
-func (s *Service) DeleteMeeting(user string, title string) error {
+func (s *Service) DeleteMeeting(user, title string) error {
 	if title == "" {
 		if s.DB.Meeting().DeleteMeetingsByInitiator(user) == 0 {
 			return errors.New("no meeting matched and deleted")
 		}
 	} else {
+		log.Verbose("check if title exists")
 		meeting := s.DB.Meeting().GetMeetingByTitle(title)
 		if meeting.Title == "" {
-			return errors.New("no such meeting with the title")
-		} else if meeting.Initiator == user {
+			return errors.New("no such meeting with the title \"" + title + "\"")
+		}
+		log.Verbose("check if you are the initiator of meeting")
+		if meeting.Initiator == user {
 			s.DB.Meeting().DeleteMeetingByTitle(title)
 		} else {
 			return errors.New("you are not the initiator of this meeting")
 		}
 	}
+	return nil
+}
+
+func (s *Service) QuitMeeting(user, title string) error {
+	meeting := s.DB.Meeting().GetMeetingByTitle(title)
+	log.Verbose("check if title exists")
+	if meeting.Title == "" {
+		return errors.New("no such meeting with the title \"" + title + "\"")
+	}
+	log.Verbose("check if you are the initiator of meeting")
+	if meeting.Initiator == user {
+		return errors.New("you are the initiator of this meeting, please use delete command")
+	} else if s.DB.Meeting().QuitMeeting(title, user) == false {
+		return errors.New("you are not the participator of this meeting")
+	}
+	log.Verbose("check if it's necessary to delete the meeting")
+	if len(meeting.Participators)-1 == 0 {
+		s.DB.Meeting().DeleteMeetingByTitle(title)
+		return errors.New("delete_meeting")
+	}
+	return nil
+}
+
+func (s *Service) RemoveParticipators(user, title string, participators []string) error {
+	// TODO
 	return nil
 }
 

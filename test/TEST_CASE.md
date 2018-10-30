@@ -133,6 +133,79 @@
 
 ## Meeting/Remove
 
+**controller/meeting**
+
+- 要检测是否登录
+- 要检测议题是否合法
+
+**service/meeting**
+
+- 要检测会议是否存在
+- 要检测当前用户是否为会议发起者
+- 要检测用户列表是否合法
+
+### 测试命令
+
+```sh
+./agenda register -u Amy -p 123456
+./agenda r -u Bob -p 654321
+./agenda r -u Cici -p 123456
+./agenda r -u Duke -p 654321
+./agenda r -u Ella -p 123456
+./agenda login -u Amy -p 123456
+./agenda m c -t me1 -s 2018-10-26/09:00 -e 2018-10-26/11:00 -p Bob,Cici,Ella
+./agenda logout
+./agenda m r -t me1 Bob
+./agenda login -u Bob -p 654321
+./agenda m r -t me1 Bob
+./agenda logout
+./agenda login -u Amy -p 123456
+./agenda m r -t me2 Bob
+./agenda m r -t me1 Bob Duke
+./agenda m r -t me1 Bob Frank
+./agenda m r -t me1 Bob Ella
+./agenda m r -t me1 Cici
+```
+
+### 测试结果
+
+```sh
+./agenda register -u Amy -p 123456
+./agenda r -u Bob -p 654321
+./agenda r -u Cici -p 123456
+./agenda r -u Duke -p 654321
+./agenda r -u Ella -p 123456
+./agenda login -u Amy -p 123456
+./agenda m c -t me1 -s 2018-10-26/09:00 -e 2018-10-26/11:00 -p Bob,Cici,Ella
+./agenda logout
+
+./agenda m r -t me1 Bob
+# 失败，未登录
+
+./agenda login -u Bob -p 654321
+
+./agenda m r -t me1 Bob
+# 失败，不是发起者
+
+./agenda logout
+./agenda login -u Amy -p 123456
+
+./agenda m r -t me2 Bob
+# 失败，会议不存在
+
+./agenda m r -t me1 Bob Duke
+# 失败，Duke不是与会者
+
+./agenda m r -t me1 Bob Frank
+# 失败，Frank不存在
+
+./agenda m r -t me1 Bob Ella
+# 成功
+
+./agenda m r -t me1 Cici
+# 成功，并删除会议
+```
+
 ## Meeting/Delete
 
 **controller/meeting**
@@ -218,12 +291,72 @@
 **service/meeting**
 
 - 要检测会议是否存在
-- 要检测当前用户是否为会议发起者
+- 要检测当前用户是否为会议发起者，发起者不能退出会议
+- 要检测当前用户是否为会议参与者
 - 要检测当前用户退出会议之后会议参与人数是否为0，是否需要删除会议
 
 ### 测试命令
 
+```sh
+./agenda register -u Amy -p 123456
+./agenda r -u Bob -p 654321
+./agenda r -u Cici -p 123456
+./agenda r -u Duke -p 654321
+./agenda r -u Ella -p 123456
+./agenda login -u Amy -p 123456
+./agenda m c -t me1 -s 2018-10-26/09:00 -e 2018-10-26/11:00 -p Bob,Cici
+./agenda logout
+./agenda m quit -t me1
+./agenda login -u Bob -p 654321
+./agenda m quit -t me1
+./agenda m q -t me1
+./agenda m q -t me2
+./agenda logout
+./agenda login -u Amy -p 123456
+./agenda m q -t me1
+./agenda logout
+./agenda login -u Cici -p 123456
+./agenda m q -t me1
+```
+
 ### 测试结果
+
+```sh
+./agenda register -u Amy -p 123456
+./agenda r -u Bob -p 654321
+./agenda r -u Cici -p 123456
+./agenda r -u Duke -p 654321
+./agenda r -u Ella -p 123456
+./agenda login -u Amy -p 123456
+./agenda m c -t me1 -s 2018-10-26/09:00 -e 2018-10-26/11:00 -p Bob,Cici
+./agenda logout
+
+./agenda m quit -t me1
+# 失败，未登录
+
+./agenda login -u Bob -p 654321
+
+./agenda m quit -t me1
+# 成功
+
+./agenda m q -t me1
+# 失败，不是会议参与者
+
+./agenda m q -t me2
+# 失败，不存在该会议
+
+./agenda logout
+./agenda login -u Amy -p 123456
+
+./agenda m q -t me1
+# 失败，为会议发起者
+
+./agenda logout
+./agenda login -u Cici -p 123456
+
+./agenda m q -t me1
+# 成功，并删除会议
+```
 
 ## Meeting/List
 

@@ -68,7 +68,18 @@ $ agenda meeting set -t <title> [-s <startTime>] [-e <endTime>] [-p <participato
 
 - You can use `s` as an alias for `set`.
 
-### Add or remove participator
+### Add participators
+
+### Remove participators
+
+```
+$ agenda meeting remove -t <title> <participators list>
+```
+
+* You can use `r` as an alias for `remove`.
+* You must be the initiator of this meeting.
+* Once list includes invalid participator name (non-exist or no participator of this meeting), remove operating will be cancelled.
+* If this meeting has no participator after you remove participators, it will be deleted.
 
 ### Delete a meeting
 

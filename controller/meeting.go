@@ -48,7 +48,28 @@ func (c *Controller) MeetingCreate() {
 
 func (c *Controller) MeetingSet() {}
 
-func (c *Controller) MeetingQuit() {}
+func (c *Controller) MeetingQuit() {
+	title, _ := c.Ctx.GetString("title")
+
+	verifyNonNilTitle(title)
+
+	currentUser := c.Ctx.User.Get()
+	if currentUser == "" {
+		fmt.Println("you should login")
+		return
+	}
+
+	err := c.Srv.Meeting().QuitMeeting(currentUser, title)
+	if err != nil {
+		if err.Error() == "delete_meeting" {
+			log.Info("quit meeting successfully and delete meeting because of no participator")
+		} else {
+			log.Error(err.Error())
+		}
+	} else {
+		log.Info("quit meeting successfully")
+	}
+}
 
 func (c *Controller) MeetingDelete() {
 	isAll, _ := c.Ctx.GetBool("all")
