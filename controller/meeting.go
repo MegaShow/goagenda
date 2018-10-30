@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+
 	"github.com/MegaShow/goagenda/lib/log"
 )
 
@@ -71,6 +72,11 @@ func (c *Controller) MeetingAdd() {
 	for i := 0; i < len(participator); i++ {
 		fmt.Println(participator[i])
 	}
+	err := ctrl.Srv.Meeting().AddMeeting(title, participator, c.Ctx.User.Get())
+	if err != nil {
+		log.Error(err.Error())
+	}
+	log.Info("add successful")
 }
 
 func (c *Controller) MeetingList() {

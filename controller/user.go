@@ -17,7 +17,6 @@ func (c *Controller) UserDelete() {
 	userName, _ := c.Ctx.GetString("username")
 	verifyUser(userName)
 	verifyPassword(password)
-	verifyEmptyArgs(c.Args)
 
 	currentUser := c.Ctx.User.Get()
 	if currentUser == "" {
@@ -50,7 +49,6 @@ func (c *Controller) UserList() {
 		fmt.Println(c.Srv.User().GetAllUsers())
 	} else {
 		verifyUser(userName)
-		verifyEmptyArgs(c.Args)
 		userDetail, err := c.Srv.User().GetUserDetail(userName)
 		if err != nil {
 			log.Error(err.Error())
