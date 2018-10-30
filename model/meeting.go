@@ -1,11 +1,8 @@
 package model
 
 import (
-<<<<<<< HEAD
 	"fmt"
-=======
 	"os"
->>>>>>> upstream/master
 	"time"
 )
 
@@ -14,14 +11,11 @@ type MeetingModel interface {
 	GetMeetingsByUser(user string) []Meeting
 	GetOccupiedParticipators(startTime, endTime time.Time) map[string]bool
 	CreateMeeting(meeting Meeting)
-<<<<<<< HEAD
 	AddMeeting(title string, participators []string)
-=======
 	DeleteMeetingByTitle(title string) bool
 	DeleteMeetingsByInitiator(name string) int
 	QuitMeeting(title, user string) bool
 	RemoveParticipators(title string, participators []string) bool
->>>>>>> upstream/master
 }
 
 type MeetingDB struct {
@@ -57,8 +51,6 @@ func (m *MeetingDB) GetMeetingByTitle(title string) Meeting {
 	return Meeting{}
 }
 
-<<<<<<< HEAD
-=======
 func (m *MeetingDB) GetMeetingsByUser(user string) (res []Meeting) {
 	for _, item := range m.Data {
 		if item.Initiator == user || search(item.Participators, user) != len(item.Participators) {
@@ -68,7 +60,6 @@ func (m *MeetingDB) GetMeetingsByUser(user string) (res []Meeting) {
 	return
 }
 
->>>>>>> upstream/master
 func (m *MeetingDB) GetOccupiedParticipators(startTime, endTime time.Time) map[string]bool {
 	occupiedParticipators := make(map[string]bool)
 	for _, item := range m.Data {
@@ -87,7 +78,6 @@ func (m *MeetingDB) CreateMeeting(meeting Meeting) {
 	m.Data = append(m.Data, meeting)
 }
 
-<<<<<<< HEAD
 func (m *MeetingDB) AddMeeting(title string, participators []string) {
 	m.isDirty = true
 	for index, item := range m.Data {
@@ -107,7 +97,6 @@ func (m *MeetingDB) AddMeeting(title string, participators []string) {
 			break
 		}
 	}
-=======
 func (m *MeetingDB) DeleteMeetingByTitle(title string) bool {
 	m.isDirty = true
 	for i := 0; i < len(m.Data); i++ {
@@ -160,7 +149,6 @@ func (m *MeetingDB) RemoveParticipators(title string, participators []string) bo
 		}
 	}
 	return false
->>>>>>> upstream/master
 }
 
 func ReleaseMeetingModel() {

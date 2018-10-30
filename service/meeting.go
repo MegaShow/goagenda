@@ -2,20 +2,12 @@ package service
 
 import (
 	"errors"
+	"sort"
+	"strings"
 	"time"
 
 	"github.com/MegaShow/goagenda/lib/log"
 	"github.com/MegaShow/goagenda/model"
-<<<<<<< HEAD
-)
-
-type MeetingService interface {
-	CreateMeeting(title string, startTime time.Time, endTime time.Time, initiator string, participators []string) error
-	AddMeeting(title string, participators []string, name string) error
-=======
-	"sort"
-	"strings"
-	"time"
 )
 
 type MeetingService interface {
@@ -24,7 +16,7 @@ type MeetingService interface {
 	QuitMeeting(user, title string) error
 	RemoveParticipators(user, title string, participators []string) error
 	ListMeetings(user, title string, startTime, endTime time.Time) (string, error)
->>>>>>> upstream/master
+	AddMeeting(title string, participators []string, name string) error
 }
 
 func CheckFreeParticipators(participators []string, initiator string, occupiedParticipators map[string]bool) (bool, string) {
@@ -93,7 +85,6 @@ func (s *Service) CreateMeeting(title string, startTime time.Time, endTime time.
 	return nil
 }
 
-<<<<<<< HEAD
 func (s *Service) AddMeeting(title string, participators []string, name string) error {
 	log.Verbose("check if meeting is exit")
 	meeting := s.DB.Meeting().GetMeetingByTitle(title)
@@ -126,7 +117,6 @@ func (s *Service) AddMeeting(title string, participators []string, name string) 
 	return nil
 }
 
-=======
 func (s *Service) DeleteMeeting(user, title string) error {
 	if title == "" {
 		if s.DB.Meeting().DeleteMeetingsByInitiator(user) == 0 {
@@ -230,7 +220,6 @@ func (s *Service) ListMeetings(user, title string, startTime, endTime time.Time)
 	return output, nil
 }
 
->>>>>>> upstream/master
 func (s *Manager) Meeting() MeetingService {
 	return s.GetService()
 }
