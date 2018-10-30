@@ -14,6 +14,87 @@
 
 ## User/Delete
 
+**controller/user**
+
+* 要检测是否登录
+* 要检测用户、密码是否合法
+* 要检测用户是否为当前用户
+
+**service/user**
+
+* 要检测用户、密码是否正确
+* 要检测是否需要删除或退出会议
+
+### 测试命令
+
+```sh
+./agenda register -u Amy -p 123456
+./agenda r -u Bob -p 654321
+./agenda r -u Cici -p 123456
+./agenda r -u Duke -p 654321
+./agenda r -u Ella -p 123456
+./agenda login -u Amy -p 123456
+./agenda meeting c -t me1 -s 2018-10-26/09:00 -e 2018-10-26/11:00 -p Bob,Cici
+./agenda meeting c -t me2 -s 2018-10-27/09:00 -e 2018-10-27/11:00 -p Duke
+./agenda logout
+./agenda login -u Bob -p 654321
+./agenda meeting c -t me3 -s 2018-10-28/09:00 -e 2018-10-28/11:00 -p Duke
+./agenda logout
+./agenda user delete -u Bob -p 654321
+./agenda login -u Bob -p 654321
+./agenda user delete -u Bob -p 123456
+./agenda user delete -u Bob -p 654321
+./agenda login -u Ella -p 123456
+./agenda u d -u Ella -p 123456
+./agenda login -u Cici -p 123456
+./agenda u d -u Cici -p 123456
+./agenda login -u Amy -p 123456
+./agenda u d -u Amy -p 123456
+```
+
+### 测试结果
+
+```sh
+./agenda register -u Amy -p 123456
+./agenda r -u Bob -p 654321
+./agenda r -u Cici -p 123456
+./agenda r -u Duke -p 654321
+./agenda r -u Ella -p 123456
+./agenda login -u Amy -p 123456
+./agenda meeting c -t me1 -s 2018-10-26/09:00 -e 2018-10-26/11:00 -p Bob,Cici
+./agenda meeting c -t me2 -s 2018-10-27/09:00 -e 2018-10-27/11:00 -p Duke
+./agenda logout
+./agenda login -u Bob -p 654321
+./agenda meeting c -t me3 -s 2018-10-28/09:00 -e 2018-10-28/11:00 -p Duke
+./agenda logout
+
+./agenda user delete -u Bob -p 654321
+# 失败，未登录
+
+./agenda login -u Bob -p 654321
+
+./agenda user delete -u Bob -p 123456
+# 失败，用户、密码不正确
+
+./agenda user delete -u Bob -p 654321
+# 成功，删除me3、修改me1
+
+./agenda login -u Ella -p 123456
+
+./agenda u d -u Ella -p 123456
+# 成功
+
+./agenda login -u Cici -p 123456
+
+./agenda u d -u Cici -p 123456
+# 成功，删除me1
+
+./agenda login -u Amy -p 123456
+
+./agenda u d -u Amy -p 123456
+# 成功，删除me3
+```
+
 ## Meeting/Create
 
 **controller/meeting**
@@ -155,7 +236,7 @@
 ./agenda login -u Amy -p 123456
 ./agenda m c -t me1 -s 2018-10-26/09:00 -e 2018-10-26/11:00 -p Bob,Cici,Ella
 ./agenda logout
-./agenda m r -t me1 Bob
+./agenda m remove -t me1 Bob
 ./agenda login -u Bob -p 654321
 ./agenda m r -t me1 Bob
 ./agenda logout
@@ -179,7 +260,7 @@
 ./agenda m c -t me1 -s 2018-10-26/09:00 -e 2018-10-26/11:00 -p Bob,Cici,Ella
 ./agenda logout
 
-./agenda m r -t me1 Bob
+./agenda m remove -t me1 Bob
 # 失败，未登录
 
 ./agenda login -u Bob -p 654321
@@ -359,4 +440,93 @@
 ```
 
 ## Meeting/List
+
+**controller/meeting**
+
+- 要检测是否登录
+- 要检测议题是否合法
+- 要检测时间是否合法
+
+### 测试命令
+
+```sh
+./agenda register -u Amy -p 123456
+./agenda r -u Bob -p 654321
+./agenda r -u Cici -p 123456
+./agenda r -u Duke -p 654321
+./agenda r -u Ella -p 123456
+./agenda login -u Amy -p 123456
+./agenda m c -t me1 -s 2018-10-26/09:00 -e 2018-10-26/11:00 -p Bob,Cici
+./agenda logout
+./agenda login -u Bob -p 654321
+./agenda m c -t me2 -s 2018-10-24/09:00 -e 2018-10-24/11:00 -p Duke
+./agenda m l
+./agenda m l -t me3
+./agenda m l -t me1
+./agenda m l -s 2018-10-25/09:00 -e 2019-10-25/09:00
+./agenda m l -s 2018-10-25/09:00
+./agenda m l -e 2019-10-25/09:00
+./agenda m l -t me1 -s 2018-10-25/09:00 -e 2019-10-25/09:00
+./agenda m l -s 2018-10-25/09:00 -e 2018-10-25/11:00
+./agenda logout
+./agenda login -u Amy -p 123456
+./agenda m l
+./agenda logout
+./agenda login -u Ella -p 123456
+./agenda m l
+./agenda logout
+```
+
+### 测试结果
+
+```sh
+./agenda register -u Amy -p 123456
+./agenda r -u Bob -p 654321
+./agenda r -u Cici -p 123456
+./agenda r -u Duke -p 654321
+./agenda r -u Ella -p 123456
+./agenda login -u Amy -p 123456
+./agenda m c -t me1 -s 2018-10-26/09:00 -e 2018-10-26/11:00 -p Bob,Cici
+./agenda logout
+./agenda login -u Bob -p 654321
+./agenda m c -t me2 -s 2018-10-24/09:00 -e 2018-10-24/11:00 -p Duke
+
+./agenda m l
+# me1、me2
+
+./agenda m l -t me3
+# nil
+
+./agenda m l -t me1
+# me1
+
+./agenda m l -s 2018-10-25/09:00 -e 2019-10-25/09:00
+# me1
+
+./agenda m l -s 2018-10-25/09:00
+# me1
+
+./agenda m l -e 2019-10-25/09:00
+# me1, me2
+
+./agenda m l -t me1 -s 2018-10-25/09:00 -e 2019-10-25/09:00
+# me1
+
+./agenda m l -s 2018-10-25/09:00 -e 2018-10-25/11:00
+# nil
+
+./agenda logout
+./agenda login -u Amy -p 123456
+
+./agenda m l
+# me1
+
+./agenda logout
+./agenda login -u Ella -p 123456
+
+./agenda m l
+# nil
+
+./agenda logout
+```
 

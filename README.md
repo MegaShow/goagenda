@@ -12,15 +12,79 @@ Agenda is a meeting management system.
 
 ## Quick Start
 
-Coming soon.
+Download the source code.
+
+```sh
+$ go get -u github.com/MegaShow/goagenda
+```
+
+Compile the source code.
+
+```sh
+$ cd $GOPATH/src/github.com/MegaShow/goagenda
+$ go build -o agenda
+```
+
+Copy and paste binary file and config file.
+
+```sh
+$ mkdir -p /opt/agenda
+$ cp agenda /opt/agenda/agenda
+$ mkdir -p ~/agenda
+$ chmod -R 777 ~/agenda
+$ cp .agenda.yaml ~/agenda/.agenda.yaml
+```
+
+Create soft link.
+
+```sh
+$ ln -S /usr/bin/agenda /opt/agenda/agenda
+```
+
+Test.
+
+```sh
+$ agenda
+```
 
 ## User manual
 
 ### Register
 
-### Login/Logout
+```
+$ agenda register -u <user> -p <password> [-e <email>] [-t <telephone>]
+```
+
+* You can use `r`  or `reg` as an alias for `register`.
+* The length of user's name must be between `1` and `32`, and name must be start with letter, including only letters, digits and underline.
+* The length of password must be between `6` and `64`, and password has no other limits.
+
+### Login
+
+```
+$ agenda login -u <user> -p <password>
+```
+
+* You can use `l` or `li` as an alias for `login`.
+* You should be in the not-logged state. 
+
+### Logout
+
+```
+$ agenda logout
+```
+
+* You can use `lo` as an alias for `logout`.
+* You should login.
 
 ### Show status
+
+```
+$ agenda status
+```
+
+* You can use `s` as an alias for `status`.
+* Show if you are logged or not.
 
 ### Set information of user
 
@@ -28,6 +92,8 @@ Coming soon.
 $ agenda user set [-p <password>] [-e <email>] [-t <telephone>]
 ```
 
+- You can use `u` as an alias for `user`.
+- You can use `s` as an alias for `set`.
 - The password cannot be empty.
 - The email address and telephone can be set empty. Please input  `-e ""` or `-t ""` to indicate it.
 
@@ -37,8 +103,11 @@ $ agenda user set [-p <password>] [-e <email>] [-t <telephone>]
 $ agenda user delete -u <user> -p <password>
 ```
 
-- You should login.
+- You can use `d` as an alias for `delete`.
+- You should verify your user's name and password.
 - Your account will be deleted，and you will logout.
+- The meetings you initiate will be deleted, and the meetings you participate will remove you in the list of participators.
+- If this meeting has no participator after you remove participators, it will be deleted.
 
 ### List users
 
@@ -46,7 +115,8 @@ $ agenda user delete -u <user> -p <password>
 $ agenda user list [-u <user>]
 ```
 
- - List the details of the user you input
+ - You can use `l` as an alias for `list`.
+ - List the details of the user you input.
  - If you don't input the username, you will get all users' information.
 
 ### Create a meeting
@@ -103,7 +173,22 @@ $ agenda meeting quit -t <title>
 
 ### List meetings
 
+```
+$ agenda meeting list [-t <title>] [-s <startTime>] [-e <endTime>]
+```
+
+* You can use `l` as an alias for `list`.
+* It will only list the meetings you initiate or participate.
+* The list will be sorted by start time.
+
 ### Print log
+
+```
+$ agenda log
+```
+
+* Print log information while `Log.IsOpen` is configured as `true`.
+* **It is a bad command, and it's considered whether to be deprecated.**
 
 ## License
 

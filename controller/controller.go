@@ -29,6 +29,7 @@ func WrapperRun(fn func()) func(*cobra.Command, []string) {
 	return func(cmd *cobra.Command, args []string) {
 		cmdStr := cmd.Name()
 		cmd.VisitParents(func(pcmd *cobra.Command) { cmdStr = pcmd.Name() + "." + cmdStr })
+		log.Init()
 		log.SetCommand(cmdStr)
 		if len(args) != 0 {
 			log.AddParams("args", args)

@@ -7,11 +7,13 @@ import (
 
 type MeetingModel interface {
 	GetMeetingByTitle(title string) Meeting
+	GetMeetingsByUser(user string) []Meeting
 	GetOccupiedParticipators(startTime, endTime time.Time) map[string]bool
 	CreateMeeting(meeting Meeting)
 	DeleteMeetingByTitle(title string) bool
 	DeleteMeetingsByInitiator(name string) int
 	QuitMeeting(title, user string) bool
+	RemoveParticipators(title string, participators []string) bool
 }
 
 type MeetingDB struct {
@@ -29,6 +31,15 @@ type Meeting struct {
 
 var meetingDB = MeetingDB{Database: Database{schema: "Meeting"}}
 
+func search(s []string, x string) (index int) {
+	for index = 0; index < len(s); index++ {
+		if s[index] == x {
+			return
+		}
+	}
+	return
+}
+
 func (m *MeetingDB) GetMeetingByTitle(title string) Meeting {
 	for _, item := range m.Data {
 		if item.Title == title {
@@ -36,6 +47,15 @@ func (m *MeetingDB) GetMeetingByTitle(title string) Meeting {
 		}
 	}
 	return Meeting{}
+}
+
+func (m *MeetingDB) GetMeetingsByUser(user string) (res []Meeting) {
+	for _, item := range m.Data {
+		if item.Initiator == user || search(item.Participators, user) != len(item.Participators) {
+			res = append(res, item)
+		}
+	}
+	return
 }
 
 func (m *MeetingDB) GetOccupiedParticipators(startTime, endTime time.Time) map[string]bool {
@@ -90,6 +110,21 @@ func (m *MeetingDB) QuitMeeting(title, user string) bool {
 				}
 			}
 			return false
+		}
+	}
+	return false
+}
+
+func (m *MeetingDB) RemoveParticipators(title string, participators []string) bool {
+	m.isDirty = true
+	for i := 0; i < len(m.Data); i++ {
+		if m.Data[i].Title == title {
+			for j := 0; j < len(m.Data[i].Participators); j++ {
+				if search(participators, m.Data[i].Participators[j]) != len(participators) {
+					m.Data[i].Participators = append(m.Data[i].Participators[:j], m.Data[i].Participators[j+1:]...)
+				}
+			}
+			return true
 		}
 	}
 	return false

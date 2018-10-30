@@ -22,17 +22,21 @@ func (c *Controller) UserDelete() {
 		fmt.Println("you should login")
 		return
 	}
-
 	if currentUser != userName {
 		log.Error("you are already logged in with user '" + currentUser + "', please logout first")
 	}
 
 	err := c.Srv.User().DeleteUser(currentUser, password)
 	if err != nil {
-		log.Error(err.Error())
+		if err.Error() == "delete_meeting_or_quit_meeting" {
+			log.Info("delete account successfully, and delete meetings you initiate and quit meetings you participate")
+		} else {
+			log.Error(err.Error())
+		}
+	} else {
+		log.Info("delete account successfully")
 	}
 	c.Ctx.User.Set("")
-	log.Info("Delete account successfully")
 }
 
 func (c *Controller) UserList() {

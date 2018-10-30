@@ -107,8 +107,6 @@ func init() {
 	meetingListCmd.Flags().StringP("title", "t", "", "the meeting title")
 	meetingListCmd.Flags().StringP("startTime", "s", "", "the meeting start time")
 	meetingListCmd.Flags().StringP("endTime", "e", "", "the meeting end time")
-	meetingListCmd.Flags().StringP("userName", "u", "", "the user name of the host of the meeting")
-	meetingListCmd.MarkFlagRequired("title")
 
 	meetingDeleteCmd.Flags().StringP("title", "t", "", "meeting title")
 	meetingDeleteCmd.Flags().BoolP("all", "a", false, "delete all meeting")

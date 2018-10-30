@@ -5,14 +5,16 @@ import (
 	"github.com/MegaShow/goagenda/lib/log"
 	"github.com/MegaShow/goagenda/model"
 	"sort"
+	"strings"
 	"time"
 )
 
 type MeetingService interface {
-	CreateMeeting(title string, startTime time.Time, endTime time.Time, initiator string, participators []string) error
+	CreateMeeting(title string, startTime, endTime time.Time, initiator string, participators []string) error
 	DeleteMeeting(user, title string) error
 	QuitMeeting(user, title string) error
 	RemoveParticipators(user, title string, participators []string) error
+	ListMeetings(user, title string, startTime, endTime time.Time) (string, error)
 }
 
 func CheckFreeParticipators(participators []string, initiator string, occupiedParticipators map[string]bool) (bool, string) {
@@ -123,8 +125,65 @@ func (s *Service) QuitMeeting(user, title string) error {
 }
 
 func (s *Service) RemoveParticipators(user, title string, participators []string) error {
-	// TODO
+	meeting := s.DB.Meeting().GetMeetingByTitle(title)
+	log.Verbose("check if title exists")
+	if meeting.Title == "" {
+		return errors.New("no such meeting with the title \"" + title + "\"")
+	}
+	log.Verbose("check if you are the initiator of meeting")
+	if meeting.Initiator != user {
+		return errors.New("you are not the initiator of this meeting")
+	}
+	for i := 0; i < len(participators); i++ {
+		var flag bool
+		for j := 0; j < len(meeting.Participators); j++ {
+			if participators[i] == meeting.Participators[j] {
+				flag = true
+			}
+		}
+		if !flag {
+			return errors.New("user \"" + participators[i] + "\" is not participator of this meeting")
+		}
+	}
+	s.DB.Meeting().RemoveParticipators(title, participators)
+	if len(s.DB.Meeting().GetMeetingByTitle(title).Participators) == 0 {
+		s.DB.Meeting().DeleteMeetingByTitle(title)
+		return errors.New("delete_meeting")
+	}
 	return nil
+}
+
+func (s *Service) ListMeetings(user, title string, startTime, endTime time.Time) (string, error) {
+	var meetings []model.Meeting
+	log.Verbose("filter data by user and title")
+	if title == "" {
+		meetings = s.DB.Meeting().GetMeetingsByUser(user)
+	} else {
+		meetings = []model.Meeting{s.DB.Meeting().GetMeetingByTitle(title)}
+		if len(meetings) == 1 && meetings[0].Initiator != user && sort.SearchStrings(meetings[0].Participators, user) == len(meetings[0].Participators) {
+			meetings = []model.Meeting{}
+		}
+	}
+	log.Verbose("filter data by time")
+	for i := 0; i < len(meetings); i++ {
+		if !meetings[i].StartTime.Before(startTime) && (endTime.Equal(time.Unix(0, 0)) || !meetings[i].EndTime.After(endTime)) {
+			continue
+		}
+		meetings = append(meetings[:i], meetings[i+1:]...)
+		i--
+	}
+	if len(meetings) == 0 {
+		return "", errors.New("no meeting list")
+	}
+	sort.Slice(meetings, func(i, j int) bool { return meetings[i].StartTime.Before(meetings[j].StartTime) })
+	output := "\n  ---------------------------\n"
+	for _, item := range meetings {
+		str := "  Title: " + item.Title + "\n  Initiator: " + item.Initiator + "\n  Participators: " + strings.Join(item.Participators, ",")
+		str += "\n  Start Time: " + item.StartTime.Format("2006-01-02/15:04") + "\n  End Time: " + item.EndTime.Format("2006-01-02/15:04")
+		str += "\n  ---------------------------\n"
+		output += str
+	}
+	return output, nil
 }
 
 func (s *Manager) Meeting() MeetingService {

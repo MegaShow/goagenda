@@ -16,7 +16,7 @@ and with email and telephone optionally.`,
 
 var loginCmd = &cobra.Command{
 	Use:     "login",
-	Aliases: []string{"l"},
+	Aliases: []string{"l", "li"},
 	Short:   "Log in agenda",
 	Long:    "Log in agenda with username and password.",
 	Args:    cobra.NoArgs,
@@ -24,11 +24,12 @@ var loginCmd = &cobra.Command{
 }
 
 var logoutCmd = &cobra.Command{
-	Use:   "logout",
-	Short: "Log out agenda",
-	Long:  "Log out agenda.",
-	Args:  cobra.NoArgs,
-	Run:   wrapper(controller.GetAdminCtrl().Logout),
+	Use:     "logout",
+	Aliases: []string{"lo"},
+	Short:   "Log out agenda",
+	Long:    "Log out agenda.",
+	Args:    cobra.NoArgs,
+	Run:     wrapper(controller.GetAdminCtrl().Logout),
 }
 
 var statusCmd = &cobra.Command{
@@ -40,11 +41,20 @@ var statusCmd = &cobra.Command{
 	Run:     wrapper(controller.GetAdminCtrl().GetStatus),
 }
 
+var logCmd = &cobra.Command{
+	Use:   "log",
+	Short: "Print log information",
+	Long:  "Print log information",
+	Args:  cobra.NoArgs,
+	Run:   wrapper(controller.GetAdminCtrl().Log),
+}
+
 func init() {
 	rootCmd.AddCommand(registerCmd)
 	rootCmd.AddCommand(loginCmd)
 	rootCmd.AddCommand(logoutCmd)
 	rootCmd.AddCommand(statusCmd)
+	rootCmd.AddCommand(logCmd)
 
 	registerCmd.Flags().StringP("user", "u", "", "username of your new account")
 	registerCmd.Flags().StringP("password", "p", "", "password of your new account")

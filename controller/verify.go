@@ -91,12 +91,28 @@ func verifyNonNilStartTime(t time.Time) {
 the format of time is YYYY-MM-DD/hh:mm or YYYY-M-D/h:m, and time is of 24-hour`)
 }
 
+// The format of time is YYYY-MM-DD/hh:mm or YYYY-M-D/h:m.
+// Time is of 24-hour.
+func verifyStartTime(t time.Time) {
+	log.Verbose("check if parameter start time matches rules")
+	verify.AssertTimeNonEqual(t, time.Unix(0, 1), `start time invalid
+the format of time is YYYY-MM-DD/hh:mm or YYYY-M-D/h:m, and time is of 24-hour`)
+}
+
 // End time shouldn't be empty.
 // The format of time is YYYY-MM-DD/hh:mm or YYYY-M-D/h:m.
 // Time is of 24-hour.
 func verifyNonNilEndTime(t time.Time) {
 	log.Verbose("check if parameter end time matches rules")
 	verify.AssertTimeNonEqual(t, time.Unix(0, 0), `end time can't be empty`)
+	verify.AssertTimeNonEqual(t, time.Unix(0, 1), `end time invalid
+the format of time is YYYY-MM-DD/hh:mm or YYYY-M-D/h:m, and time is of 24-hour`)
+}
+
+// The format of time is YYYY-MM-DD/hh:mm or YYYY-M-D/h:m.
+// Time is of 24-hour.
+func verifyEndTime(t time.Time) {
+	log.Verbose("check if parameter end time matches rules")
 	verify.AssertTimeNonEqual(t, time.Unix(0, 1), `end time invalid
 the format of time is YYYY-MM-DD/hh:mm or YYYY-M-D/h:m, and time is of 24-hour`)
 }

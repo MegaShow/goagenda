@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"github.com/MegaShow/goagenda/lib/log"
+	"time"
 )
 
 type MeetingCtrl interface {
@@ -119,25 +120,56 @@ func (c *Controller) MeetingAdd() {
 }
 
 func (c *Controller) MeetingList() {
-	title, _ := c.Ctx.GetString("title")
-	startTime, _ := c.Ctx.GetString("startTime")
-	endTime, _ := c.Ctx.GetString("endTime")
-	userName, _ := c.Ctx.GetString("userName")
-	fmt.Println("title: ", title)
-	fmt.Println("startTime: ", startTime)
-	fmt.Println("endTime: ", endTime)
-	fmt.Println("userName: ", userName)
+	title, setT := c.Ctx.GetString("title")
+	startTime, _ := c.Ctx.GetTime("startTime")
+	endTime, _ := c.Ctx.GetTime("endTime")
+
+	if setT {
+		verifyNonNilTitle(title)
+	}
+	verifyStartTime(startTime)
+	verifyEndTime(endTime)
+
+	log.Verbose("check status")
+	currentUser := c.Ctx.User.Get()
+	if currentUser == "" {
+		fmt.Println("you should login")
+		return
+	}
+
+	log.Verbose("check time")
+	if !endTime.Equal(time.Unix(0, 0)) && !startTime.Before(endTime) {
+		fmt.Println("start time should be before end time")
+		return
+	}
+
+	detail, err := c.Srv.Meeting().ListMeetings(currentUser, title, startTime, endTime)
+	if err != nil {
+		log.Error(err.Error())
+	}
+	fmt.Println(detail)
 }
 
 func (c *Controller) MeetingRemove() {
 	title, _ := c.Ctx.GetString("title")
-	fmt.Println("title: ", title)
-	participator := c.Args
-	if len(participator) == 0 {
-		fmt.Println(0)
+
+	verifyNonNilTitle(title)
+
+	currentUser := c.Ctx.User.Get()
+	if currentUser == "" {
+		fmt.Println("you should login")
+		return
 	}
-	for i := 0; i < len(participator); i++ {
-		fmt.Println(participator[i])
+
+	err := c.Srv.Meeting().RemoveParticipators(currentUser, title, c.Args)
+	if err != nil {
+		if err.Error() == "delete_meeting" {
+			log.Info("remove participators successfully and delete meeting because of no participator")
+		} else {
+			log.Error(err.Error())
+		}
+	} else {
+		log.Info("remove participators successfully")
 	}
 }
 
