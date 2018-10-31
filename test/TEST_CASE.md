@@ -10,6 +10,79 @@
 
 ## User/Set
 
+**controller/user**
+
+- 检测是否登录
+
+**service/user**
+
+- 如果重设了密码，需要进行加密操作
+
+### 测试例子
+
+```sh
+rm data/*.json
+./agenda register -u Amy -p 123456
+./agenda user set -e yuyu@qq.com
+./agenda login -u Amy -p 123456
+./agenda u s -e y
+./agenda u s -t 2321
+./agenda u s -p 12ab
+./agenda u s -p ""
+./agenda u s -p "123456@"
+./agenda u s
+./agenda u s -e yuyu@qq.com -t 13800138000 -p "123abc"
+./agenda u list
+./agenda u s -e "" -t ""
+./agenda u list
+./agenda logout
+./agenda login -u Amy -p 123abc
+./agenda logout
+```
+
+### 测试结果
+
+```sh
+./agenda register -u Amy -p 123456
+
+./agenda user set -e yuyu@qq.com
+# 不成功，因为未登陆
+
+./agenda login -u Amy -p 123456
+
+./agenda u s -e y
+# 不成功，因为邮箱参数格式不正确
+
+./agenda u s -t 2321
+# 不成功，因为电话参数格式不正确
+
+./agenda u s -p 12ab
+# 不成功，因为密码过短
+
+./agenda u s -p ""
+# 不成功，因为密码为空
+
+./agenda u s -p "123456@"
+
+./agenda u s
+# set nothing
+
+./agenda u s -e yuyu@qq.com -t 13800138000 -p "123abc"
+
+./agenda u list
+
+./agenda u s -e "" -t ""
+# 设邮箱为空，电话为空
+
+./agenda u list
+
+./agenda logout
+
+./agenda login -u Amy -p 123abc
+
+./agenda logout
+```
+
 ## User/List
 
 ## User/Delete
@@ -31,6 +104,7 @@
 ### 测试命令
 
 ```sh
+rm data/*.json
 ./agenda register -u Amy -p 123456
 ./agenda r -u Bob -p 654321
 ./agenda r -u Cici -p 123456
@@ -38,6 +112,7 @@
 ./agenda r -u Ella -p 123456
 ./agenda meeting c -t me1 -s 2018-10-26/09:00 -e 2018-10-26/08:00 -p Bob,Cici
 ./agenda login -u Amy -p 123456
+./agenda meeting c
 ./agenda meeting c -t me0 -s "" -e 2018-10-26/08:00 -p Bob,Cici
 ./agenda meeting c -t me0 -s 2018-10-26/09:00 -e 2018-10-26-08-00 -p Bob,Cici
 ./agenda meeting c -t me1 -s 2018-10-26/09:00 -e 2018-10-26/08:00 -p Bob,Cici
@@ -75,6 +150,9 @@
 
 ./agenda login -u Amy -p 123456
 
+./agenda meeting c
+# 不成功，因为无参数
+
 ./agenda meeting c -t me0 -s "" -e 2018-10-26/08:00 -p Bob,Cici
 # 不成功，因为输入的时间为空
 
@@ -95,6 +173,7 @@
 
 ./agenda m c -t me1 -s 2018-10-26/09:00 -e 2018-10-26/11:00 -p Bob,Cici
 # 成功
+# me1 2018-10-26/09:00 2018-10-26/11:00 Amy Bob,Cici
 
 ./agenda m c -t me1 -s 2018-10-26/13:00 -e 2018-10-26/15:00 -p Bob,Cici
 # 不成功，因为议题me1已存在
@@ -106,6 +185,8 @@
 # 成功
 # （检测一场会议的endTime与另一场会议的startTime重叠的情况：me2结束时间与me1开始时间重叠）
 # （同时检测与会者去重的情况，在data/meeting.json里查看，结果应该是Bob,Duke）
+# me1 2018-10-26/09:00 2018-10-26/11:00 Amy Bob,Cici
+# me2 2018-10-26/08:00 2018-10-26/09:00 Amy Bob,Duke
 
 ./agenda logout
 
@@ -119,10 +200,17 @@
 
 ./agenda m c -t me3 -s 2018-10-27/16:00 -e 2018-10-27/17:00 -p Cici,Ella
 # 成功
+# me1 2018-10-26/09:00 2018-10-26/11:00 Amy Bob,Cici
+# me2 2018-10-26/08:00 2018-10-26/09:00 Amy Bob,Duke
+# me3 2018-10-27/16:00 2018-10-27/17:00 Duke Cici,Ella
 
 ./agenda m c -t me4 -s 2018-10-26/9:30 -e 2018-10-26/10:30 -p Ella
 # 成功
 # （检测有时间段重叠、但人员不相干的会议的情况）
+# me1 2018-10-26/09:00 2018-10-26/11:00 Amy Bob,Cici
+# me2 2018-10-26/08:00 2018-10-26/09:00 Amy Bob,Duke
+# me3 2018-10-27/16:00 2018-10-27/17:00 Duke Cici,Ella
+# me4 2018-10-26/09:30 2018-10-26/10:30 Duke Ella
 
 ./agenda logout
 ```
@@ -152,7 +240,7 @@
 
 ### 测试命令
 
-```shell
+```sh
 rm data/*.json
 ./agenda register -u Amy -p 123456
 ./agenda r -u Bob -p 654321
@@ -184,14 +272,15 @@ rm data/*.json
 ./agenda m s -t me3 -p Duke,Amy
 ./agenda m s -t me3 -e 2018-11-1/7:45
 ./agenda m s -t me3 -s 2018-11-1/6:0
-./agenda m s -t me3 -p Amy,Ella,Bob,Duke,Frank
+./agenda m s -t me3 -p Amy,Ella,Duke,Bob
+./agenda m c -t me4 -s 2018-11-1/10:00 -e 2018-11-1/10:30 -p Frank
+./agenda m s -t me4 -s 2018-11-1/7:00 -e 2018-11-1/7:30
 ./agenda logout
-
 ```
 
 ### 测试结果
 
-```shell
+```sh
 ./agenda register -u Amy -p 123456
 
 ./agenda r -u Bob -p 654321
@@ -229,7 +318,7 @@ rm data/*.json
 
 ./agenda m create -t me1 -s 2018-11-1/09:00 -e 2018-11-1/11:00 -p Bob,Cici
 # 创建会议me1
-# me1 Amy 2018-11-1/09:00 2018-11-1/11:00 Bob,Cici
+# me1 2018-11-1/09:00 2018-11-1/11:00 Amy Bob,Cici
 
 ./agenda m s -t me1 -s 2018-11-1/13:00 -p Bob
 # 不成功，因为重设的startTime不在原来的endTime之前
@@ -243,12 +332,12 @@ rm data/*.json
 ./agenda m s -t me1 -s 2018-11-1/09:30 -e 2018-11-1/11:30 -p Ella,Ella,Bob,Amy
 # 成功，对me1，重设时间段，重设与会者，并且去掉了重复的与会者
 # 在data/meeting.json里查看结果
-# me1 Amy 2018-11-1/09:30 2018-11-1/11:30 Bob,Ella
+# me1 2018-11-1/09:30 2018-11-1/11:30 Amy Bob,Ella
 
 ./agenda m create -t me2 -s 2018-11-1/15:00 -e 2018-11-1/17:30 -p Bob,Duke
 # 创建会议me2
-# me1 Amy 2018-11-1/09:30 2018-11-1/11:30 Bob,Ella
-# me2 Amy 2018-11-1/15:00 2018-11-1/17:30 Bob,Duke
+# me1 2018-11-1/09:30 2018-11-1/11:30 Amy Bob,Ella
+# me2 2018-11-1/15:00 2018-11-1/17:30 Amy Bob,Duke
 
 ./agenda m s -t me2 -s 2018-11-1/10:00 -e 2018-11-1/12:30
 # 不成功，因为Amy或Bob有重叠的会议me1
@@ -257,8 +346,8 @@ rm data/*.json
 ./agenda m s -t me2 -s 2018-11-1/8:0 -e 2018-11-1/9:0 -p Bob,Frank
 # 成功
 # （测试：一场会议结束时间与另一场会议开始时间重叠的情况）
-# me1 Amy 2018-11-1/09:30 2018-11-1/11:30 Bob,Ella
-# me2 Amy 2018-11-1/08:00 2018-11-1/09:00 Bob,Frank
+# me1 2018-11-1/09:30 2018-11-1/11:30 Amy Bob,Ella
+# me2 2018-11-1/08:00 2018-11-1/09:00 Amy Bob,Frank
 
 ./agenda logout
 
@@ -266,9 +355,9 @@ rm data/*.json
 
 ./agenda m create -t me3 -s 2018-11-1/7:30 -e 2018-11-1/8:45 -p Ella,Duke
 # 创建会议me3
-# me1 Amy 2018-11-1/09:30 2018-11-1/11:30 Bob,Ella
-# me2 Amy 2018-11-1/08:00 2018-11-1/09:00 Bob,Frank
-# me3 Cici 2018-11-1/07:30 2018-11-1/08:45 Duke,Ella
+# me1 2018-11-1/09:30 2018-11-1/11:30 Amy Bob,Ella
+# me2 2018-11-1/08:00 2018-11-1/09:00 Amy Bob,Frank
+# me3 2018-11-1/07:30 2018-11-1/08:45 Cici Duke,Ella
 
 ./agenda m s -t me1 -s 2018-11-1/8:00
 # 不成功，因为me1的发起人不是当前用户Cici
@@ -287,12 +376,22 @@ rm data/*.json
 ./agenda m s -t me3 -s 2018-11-1/6:00
 # 成功
 
-./agenda m s -t me3 -p Amy,Ella,Bob,Duke,Frank
+./agenda m s -t me3 -p Amy,Ella,Duke,Bob
 # 成功
-# me1 Amy 2018-11-1/09:30 2018-11-1/11:30 Bob,Ella
-# me2 Amy 2018-11-1/08:00 2018-11-1/09:00 Bob,Frank
-# me3 Cici 2018-11-1/06:00 2018-11-1/07:45 Amy,Bob,Duke,Ella,Frank
+# me1 2018-11-1/09:30 2018-11-1/11:30 Amy Bob,Ella
+# me2 2018-11-1/08:00 2018-11-1/09:00 Amy Bob,Frank
+# me3 2018-11-1/06:00 2018-11-1/07:45 Cici Amy,Bob,Duke,Ella
+
+./agenda m c -t me4 -s 2018-11-1/10:00 -e 2018-11-1/10:30 -p Frank
+# 创建会议me4
+# me1 2018-11-1/09:30 2018-11-1/11:30 Amy Bob,Ella
+# me2 2018-11-1/08:00 2018-11-1/09:00 Amy Bob,Frank
+# me3 2018-11-1/06:00 2018-11-1/07:45 Cici Amy,Bob,Duke,Ella
+# me4 2018-11-1/10:00 2018-11-1/10:30 Cici Frank
+
+./agenda m s -t me4 -s 2018-11-1/7:00 -e 2018-11-1/7:30
+# 不成功，因为当前用户Cici有重叠的会议me3
 
 ./agenda logout
-
 ```
+

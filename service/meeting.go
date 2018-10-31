@@ -43,7 +43,7 @@ func (s *Service) CreateMeeting(title string, startTime time.Time, endTime time.
 	log.Verbose("check if title exists")
 	titleMeeting := s.DB.Meeting().GetMeetingByTitle(title)
 	if titleMeeting.Title == title {
-		return errors.New("title already exists")
+		return errors.New("meeting '" + title + "' already exists")
 	}
 
 	log.Verbose("check if some participator doesn't exist")
@@ -85,12 +85,12 @@ func (s *Service) SetMeeting(title string, startTime time.Time, setStart bool, e
 	log.Verbose("check if meeting exists")
 	titleMeeting := s.DB.Meeting().GetMeetingByTitle(title)
 	if titleMeeting.Title == "" {
-		return errors.New("meeting doesn't exist")
+		return errors.New("meeting '" + title + "' doesn't exist")
 	}
 
 	log.Verbose("check if current user initiates the meeting")
 	if titleMeeting.Initiator != initiator {
-		return errors.New("you aren't the initiator of the meeting")
+		return errors.New("you aren't the initiator of meeting '" + title + "'")
 	}
 
 	log.Verbose("check if new time interval is valid")
