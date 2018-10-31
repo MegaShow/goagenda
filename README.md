@@ -12,33 +12,28 @@ Agenda is a meeting management system.
 
 ## Quick Start
 
-Download the source code.
+Install agenda.
 
 ```sh
-$ go get -u github.com/MegaShow/goagenda
-```
-
-Compile the source code.
-
-```sh
-$ cd $GOPATH/src/github.com/MegaShow/goagenda
-$ go build -o agenda
-```
-
-Copy and paste binary file and config file.
-
-```sh
-$ mkdir -p /opt/agenda
-$ cp agenda /opt/agenda/agenda
-$ mkdir -p ~/agenda
-$ chmod -R 777 ~/agenda
-$ cp .agenda.yaml ~/agenda/.agenda.yaml
+$ go install github.com/MegaShow/goagenda
 ```
 
 Create soft link.
 
 ```sh
-$ ln -S /usr/bin/agenda /opt/agenda/agenda
+$ ln -S /usr/bin/agenda $GOPATH/bin/goagenda
+```
+
+Or rename the binary file.
+
+```sh
+$ mv $GOPATH/bin/goagenda $GOPATH/bin/agenda
+```
+
+Initial the config file while first running.
+
+```sh
+$ agenda
 ```
 
 Test.

@@ -2,11 +2,13 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/MegaShow/goagenda/config"
 	"github.com/MegaShow/goagenda/controller"
 	"github.com/MegaShow/goagenda/lib/log"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"gopkg.in/yaml.v2"
 	"os"
 	"strings"
 )
@@ -46,21 +48,20 @@ func init() {
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
+	// Find home directory.
+	home, err := homedir.Dir()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
 	if cfgFile != "" {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
 	} else {
-		// Find home directory.
-		home, err := homedir.Dir()
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-
 		// Search config in home directory with name ".agenda" (without extension).
-		viper.AddConfigPath(home)
 		viper.AddConfigPath(".")
-		viper.AddConfigPath(home + string(os.PathSeparator) + "agenda")
+		viper.AddConfigPath(home + string(os.PathSeparator) + ".agenda")
 		viper.SetConfigName(".agenda")
 	}
 
@@ -69,6 +70,34 @@ func initConfig() {
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err != nil {
 		fmt.Println(err)
+		if cfgFile == "" {
+			path := home + string(os.PathSeparator) + ".agenda"
+			if _, err := os.Stat(path); err != nil {
+				err := os.MkdirAll(path, 0777)
+				if err != nil {
+					fmt.Println(err)
+					os.Exit(2)
+				}
+			}
+			f, err := os.OpenFile(path+string(os.PathSeparator)+".agenda.yaml", os.O_CREATE|os.O_WRONLY, 0777)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(2)
+			}
+			defer f.Close()
+			data, err := yaml.Marshal(config.Default())
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(2)
+			}
+			_, err = f.Write(data)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(2)
+			}
+			fmt.Println("\nCreate default config in \"" + path + "\"")
+			fmt.Println("Please rerun agenda")
+		}
 		os.Exit(1)
 	}
 

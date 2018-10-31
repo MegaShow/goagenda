@@ -12,33 +12,28 @@ Agenda是一个基于命令行的会议管理系统。
 
 ## 快速入门
 
-下载源码。
+安装agenda。
 
 ```sh
-$ go get -u github.com/MegaShow/goagenda
-```
-
-编译源码。
-
-```sh
-$ cd $GOPATH/src/github.com/MegaShow/goagenda
-$ go build -o agenda
-```
-
-复制粘贴二进制文件和配置文件。
-
-```sh
-$ mkdir -p /opt/agenda
-$ cp agenda /opt/agenda/agenda
-$ mkdir -p ~/agenda
-$ chmod -R 777 ~/agenda
-$ cp .agenda.yaml ~/agenda/.agenda.yaml
+$ go install github.com/MegaShow/goagenda
 ```
 
 创建软链接。
 
 ```sh
-$ ln -S /usr/bin/agenda /opt/agenda/agenda
+$ ln -S /usr/bin/agenda $GOPATH/bin/goagenda
+```
+
+或者重命名二进制文件。
+
+```sh
+$ mv $GOPATH/bin/goagenda $GOPATH/bin/agenda
+```
+
+初次运行agenda以初始化配置文件。
+
+```sh
+$ agenda
 ```
 
 测试。

@@ -104,8 +104,8 @@ func TestService_CreateMeeting(t *testing.T) {
 	}
 
 	err = c.call_m_c(s, "me1", "2018-10-26/13:00", "2018-10-26/15:00", "Amy", []string{"Bob", "Cici"})
-	if err.Error() != "title already exists" {
-		t.Error("Info: err != \"title already exists\", err = " + err.Error())
+	if err.Error() != "meeting 'me1' already exists" {
+		t.Error("Info: err != \"meeting 'me1' already exists\", err = " + err.Error())
 		t.FailNow()
 	}
 
