@@ -11,6 +11,7 @@ type MeetingModel interface {
 	GetOccupiedParticipators(title string, startTime, endTime time.Time) map[string]bool
 	CreateMeeting(meeting Meeting)
 	AddMeeting(title string, participators []string)
+  SetMeeting(title string, startTime time.Time, setStart bool, endTime time.Time, setEnd bool, participators []string, setPars bool)
 	DeleteMeetingByTitle(title string) bool
 	DeleteMeetingsByInitiator(name string) int
 	QuitMeeting(title, user string) bool
@@ -96,6 +97,26 @@ func (m *MeetingDB) AddMeeting(title string, participators []string) {
 		}
 	}
 }
+
+func (m *MeetingDB) SetMeeting(title string, startTime time.Time, setStart bool,
+	endTime time.Time, setEnd bool, participators []string, setPars bool) {
+	m.isDirty = true
+	for index, item := range m.Data {
+		if item.Title == title {
+			if setStart {
+				m.Data[index].StartTime = startTime
+			}
+			if setEnd {
+				m.Data[index].EndTime = endTime
+			}
+			if setPars {
+				m.Data[index].Participators = participators
+			}
+			return
+		}
+	}
+}
+
 func (m *MeetingDB) DeleteMeetingByTitle(title string) bool {
 	m.isDirty = true
 	for i := 0; i < len(m.Data); i++ {

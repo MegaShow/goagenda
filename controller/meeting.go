@@ -49,7 +49,47 @@ func (c *Controller) MeetingCreate() {
 	log.Info("create meeting successfully")
 }
 
-func (c *Controller) MeetingSet() {}
+func (c *Controller) MeetingSet() {
+	title, _ := c.Ctx.GetString("title")
+	startTime, setStart := c.Ctx.GetTime("startTime")
+	endTime, setEnd := c.Ctx.GetTime("endTime")
+	participators, setPars := c.Ctx.GetStringSlice("participator")
+
+	verifyNonNilTitle(title)
+	if setStart {
+		verifyNonNilStartTime(startTime)
+	}
+	if setEnd {
+		verifyNonNilEndTime(endTime)
+	}
+	if setPars {
+		verifyNonNilParticipator(participators)
+	}
+
+	log.Verbose("check status")
+	currentUser := c.Ctx.User.Get()
+	if currentUser == "" {
+		fmt.Println("you should login")
+		return
+	}
+
+	if !setStart && !setEnd && !setPars {
+		fmt.Println("set nothing")
+		return
+	}
+
+	log.Verbose("check time")
+	if setStart && setEnd && !startTime.Before(endTime) {
+		fmt.Println("start time should be before end time")
+		return
+	}
+
+	err := ctrl.Srv.Meeting().SetMeeting(title, startTime, setStart, endTime, setEnd, currentUser, participators, setPars)
+	if err != nil {
+		log.Error(err.Error())
+	}
+	log.Info("set meeting successfully")
+}
 
 func (c *Controller) MeetingQuit() {
 	title, _ := c.Ctx.GetString("title")
