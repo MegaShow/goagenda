@@ -1,7 +1,6 @@
 package model
 
 import (
-	"fmt"
 	"os"
 	"time"
 )
@@ -9,7 +8,7 @@ import (
 type MeetingModel interface {
 	GetMeetingByTitle(title string) Meeting
 	GetMeetingsByUser(user string) []Meeting
-	GetOccupiedParticipators(startTime, endTime time.Time) map[string]bool
+	GetOccupiedParticipators(title string, startTime, endTime time.Time) map[string]bool
 	CreateMeeting(meeting Meeting)
 	AddMeeting(title string, participators []string)
 	DeleteMeetingByTitle(title string) bool
@@ -60,10 +59,10 @@ func (m *MeetingDB) GetMeetingsByUser(user string) (res []Meeting) {
 	return
 }
 
-func (m *MeetingDB) GetOccupiedParticipators(startTime, endTime time.Time) map[string]bool {
+func (m *MeetingDB) GetOccupiedParticipators(title string, startTime, endTime time.Time) map[string]bool {
 	occupiedParticipators := make(map[string]bool)
 	for _, item := range m.Data {
-		if item.EndTime.After(startTime) && item.StartTime.Before(endTime) {
+		if item.Title != title && item.EndTime.After(startTime) && item.StartTime.Before(endTime) {
 			occupiedParticipators[item.Initiator] = true
 			for _, participator := range item.Participators {
 				occupiedParticipators[participator] = true
@@ -91,12 +90,12 @@ func (m *MeetingDB) AddMeeting(title string, participators []string) {
 				if !hasAdd {
 					participatorMap[participator] = true
 					m.Data[index].Participators = append(item.Participators, participator)
-					fmt.Println(participator)
 				}
 			}
 			break
 		}
 	}
+}
 func (m *MeetingDB) DeleteMeetingByTitle(title string) bool {
 	m.isDirty = true
 	for i := 0; i < len(m.Data); i++ {

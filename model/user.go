@@ -29,7 +29,7 @@ var userDB = UserDB{Database: Database{schema: "User"}}
 
 func (m *UserDB) GetUserByName(name string) User {
 	for _, item := range m.Data {
-		if strings.ToLower(item.Name) == strings.ToLower(name) {
+		if item.Name == name {
 			return item
 		}
 	}

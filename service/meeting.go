@@ -59,7 +59,7 @@ func (s *Service) CreateMeeting(title string, startTime time.Time, endTime time.
 	}
 
 	log.Verbose("check if some participator is occupied")
-	occupiedParticipators := s.DB.Meeting().GetOccupiedParticipators(startTime, endTime)
+	occupiedParticipators := s.DB.Meeting().GetOccupiedParticipators(title, startTime, endTime)
 	free, occupiedOne := CheckFreeParticipators(participators, initiator, occupiedParticipators)
 	if !free {
 		var begin string
@@ -89,7 +89,7 @@ func (s *Service) AddMeeting(title string, participators []string, name string) 
 	log.Verbose("check if meeting is exit")
 	meeting := s.DB.Meeting().GetMeetingByTitle(title)
 	if meeting.Title == "" {
-		return errors.New("meeting with title" + title + "doesn't exit")
+		return errors.New("meeting with title \"" + title + "\" doesn't exit")
 	}
 
 	log.Verbose("check if the user is the sponsor of the meeting")
@@ -100,12 +100,12 @@ func (s *Service) AddMeeting(title string, participators []string, name string) 
 	log.Verbose("check if some participator doesn't exist")
 	for _, participator := range participators {
 		if s.DB.User().GetUserByName(participator).Name == "" {
-			return errors.New("user '" + participator + "' doesn't exist")
+			return errors.New("user \"" + participator + "\" doesn't exist")
 		}
 	}
 
 	log.Verbose("check if some participator is occupied")
-	occupiedParticipators := s.DB.Meeting().GetOccupiedParticipators(meeting.StartTime, meeting.EndTime)
+	occupiedParticipators := s.DB.Meeting().GetOccupiedParticipators(title, meeting.StartTime, meeting.EndTime)
 	free, occupiedOne := CheckFreeParticipators(participators, "", occupiedParticipators)
 	if !free {
 		var begin string
