@@ -140,6 +140,15 @@ $ agenda meeting set -t <title> [-s <startTime>] [-e <endTime>] [-p <participato
 
 ### Add participators
 
+```sh
+$ agenda meeting add -t <title> participators
+```
+
+- You can use `a` as an alias for `add`.
+- If you want to add more than one participator, please input like `p1 p2 p3 ...` .
+- You must be the initiator of this meeting.
+- If you add the participator who has been added into the meeting, you will not get the error message but this participator will not be add to the meeting twice.
+
 ### Remove participators
 
 ```

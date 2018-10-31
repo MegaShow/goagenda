@@ -2,8 +2,10 @@ package controller
 
 import (
 	"fmt"
-	"github.com/MegaShow/goagenda/lib/log"
+
 	"time"
+
+	"github.com/MegaShow/goagenda/lib/log"
 )
 
 type MeetingCtrl interface {
@@ -149,14 +151,19 @@ func (c *Controller) MeetingDelete() {
 
 func (c *Controller) MeetingAdd() {
 	title, _ := c.Ctx.GetString("title")
-	fmt.Println("title: ", title)
 	participator := c.Args
-	if len(participator) == 0 {
-		fmt.Println(0)
+	user := c.Ctx.User.Get()
+	if user == "" {
+		fmt.Println("you should first login")
+		return
 	}
-	for i := 0; i < len(participator); i++ {
-		fmt.Println(participator[i])
+	err := ctrl.Srv.Meeting().AddMeeting(title, participator, user)
+	if err != nil {
+		log.Error(err.Error())
+	} else {
+		log.Info("add successful")
 	}
+
 }
 
 func (c *Controller) MeetingList() {

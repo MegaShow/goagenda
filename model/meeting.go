@@ -10,6 +10,7 @@ type MeetingModel interface {
 	GetMeetingsByUser(user string) []Meeting
 	GetOccupiedParticipators(title string, startTime, endTime time.Time) map[string]bool
 	CreateMeeting(meeting Meeting)
+	AddMeeting(title string, participators []string)
   SetMeeting(title string, startTime time.Time, setStart bool, endTime time.Time, setEnd bool, participators []string, setPars bool)
 	DeleteMeetingByTitle(title string) bool
 	DeleteMeetingsByInitiator(name string) int
@@ -59,7 +60,7 @@ func (m *MeetingDB) GetMeetingsByUser(user string) (res []Meeting) {
 	return
 }
 
-func (m *MeetingDB) GetOccupiedParticipators(title string, startTime, endTime time.Time) map[string]bool{
+func (m *MeetingDB) GetOccupiedParticipators(title string, startTime, endTime time.Time) map[string]bool {
 	occupiedParticipators := make(map[string]bool)
 	for _, item := range m.Data {
 		if item.Title != title && item.EndTime.After(startTime) && item.StartTime.Before(endTime) {
@@ -75,6 +76,26 @@ func (m *MeetingDB) GetOccupiedParticipators(title string, startTime, endTime ti
 func (m *MeetingDB) CreateMeeting(meeting Meeting) {
 	m.isDirty = true
 	m.Data = append(m.Data, meeting)
+}
+
+func (m *MeetingDB) AddMeeting(title string, participators []string) {
+	m.isDirty = true
+	for index, item := range m.Data {
+		if item.Title == title {
+			participatorMap := make(map[string]bool)
+			for _, participator := range item.Participators {
+				participatorMap[participator] = true
+			}
+			for _, participator := range participators {
+				_, hasAdd := participatorMap[participator]
+				if !hasAdd {
+					participatorMap[participator] = true
+					m.Data[index].Participators = append(item.Participators, participator)
+				}
+			}
+			break
+		}
+	}
 }
 
 func (m *MeetingDB) SetMeeting(title string, startTime time.Time, setStart bool,
@@ -95,7 +116,7 @@ func (m *MeetingDB) SetMeeting(title string, startTime time.Time, setStart bool,
 		}
 	}
 }
-  
+
 func (m *MeetingDB) DeleteMeetingByTitle(title string) bool {
 	m.isDirty = true
 	for i := 0; i < len(m.Data); i++ {

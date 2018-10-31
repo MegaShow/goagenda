@@ -139,6 +139,15 @@ $ agenda meeting set -t <title> [-s <startTime>] [-e <endTime>] [-p <participato
 
 ### 添加与会者
 
+```sh
+$ agenda meeting add -t <title> participators
+```
+
+- 你可以用 `a` 代替 `add`。 
+- 如果你想要添加多个与会者，请像这样输入： `p1 p2 p3 ...` 。
+- 你必须是这个会议的发起者。
+- 如果你添加了原来会议就存在的成员，你将不会收到错误信息，但是这个人不会再次加入到会议中。
+
 ### 移除与会者
 
 ```
