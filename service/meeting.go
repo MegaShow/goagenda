@@ -11,6 +11,7 @@ import (
 
 type MeetingService interface {
 	CreateMeeting(title string, startTime, endTime time.Time, initiator string, participators []string) error
+  SetMeeting(title string, startTime time.Time, setStart bool, endTime time.Time, setEnd bool, initiator string, participators []string, setPars bool) error
 	DeleteMeeting(user, title string) error
 	QuitMeeting(user, title string) error
 	RemoveParticipators(user, title string, participators []string) error
@@ -46,7 +47,7 @@ func (s *Service) CreateMeeting(title string, startTime time.Time, endTime time.
 	log.Verbose("check if title exists")
 	titleMeeting := s.DB.Meeting().GetMeetingByTitle(title)
 	if titleMeeting.Title == title {
-		return errors.New("title already exists")
+		return errors.New("meeting '" + title + "' already exists")
 	}
 
 	log.Verbose("check if some participator doesn't exist")
@@ -57,7 +58,7 @@ func (s *Service) CreateMeeting(title string, startTime time.Time, endTime time.
 	}
 
 	log.Verbose("check if some participator is occupied")
-	occupiedParticipators := s.DB.Meeting().GetOccupiedParticipators(startTime, endTime)
+	occupiedParticipators := s.DB.Meeting().GetOccupiedParticipators(title, startTime, endTime)
 	free, occupiedOne := CheckFreeParticipators(participators, initiator, occupiedParticipators)
 	if !free {
 		var begin string
@@ -80,6 +81,70 @@ func (s *Service) CreateMeeting(title string, startTime time.Time, endTime time.
 		Initiator:     initiator,
 		Participators: finalParticipators,
 	})
+	return nil
+}
+
+func (s *Service) SetMeeting(title string, startTime time.Time, setStart bool, endTime time.Time, setEnd bool,
+	initiator string, participators []string, setPars bool) error{
+	log.Verbose("check if meeting exists")
+	titleMeeting := s.DB.Meeting().GetMeetingByTitle(title)
+	if titleMeeting.Title == "" {
+		return errors.New("meeting '" + title + "' doesn't exist")
+	}
+
+	log.Verbose("check if current user initiates the meeting")
+	if titleMeeting.Initiator != initiator {
+		return errors.New("you aren't the initiator of meeting '" + title + "'")
+	}
+
+	log.Verbose("check if new time interval is valid")
+	if !setStart {
+		startTime = titleMeeting.StartTime
+	}
+	if !setEnd {
+		endTime = titleMeeting.EndTime
+	}
+	if !startTime.Before(endTime) {
+		if setStart && !setEnd {
+			return errors.New("new start time should be before old end time")
+		} else {
+			return errors.New("new end time should be after old start time")
+		}
+	}
+
+	log.Verbose("check if some new participator doesn't exist")
+	if setPars {
+		for _, participator := range participators {
+			if s.DB.User().GetUserByName(participator).Name == "" {
+				return errors.New("user '" + participator + "' doesn't exist")
+			}
+		}
+	}
+
+	log.Verbose("check if some participator is occupied")
+	if !setPars {
+		participators = titleMeeting.Participators
+	}
+	occupiedParticipators := s.DB.Meeting().GetOccupiedParticipators(title, startTime, endTime)
+	free, occupiedOne := CheckFreeParticipators(participators, initiator, occupiedParticipators)
+	if !free {
+		var begin string
+		if initiator == occupiedOne {
+			begin = "you are"
+		} else {
+			begin = "user '" + occupiedOne + "' is"
+		}
+		return errors.New(begin + " occupied during the time")
+	}
+
+	log.Verbose("remove duplicated participators")
+	finalParticipators := participators
+	if setPars {
+		finalParticipators = RemoveDuplicatedParticipators(participators, initiator)
+		sort.Strings(finalParticipators)
+	}
+
+	s.DB.Meeting().SetMeeting(title, startTime, setStart, endTime, setEnd, finalParticipators, setPars)
 	return nil
 }
 

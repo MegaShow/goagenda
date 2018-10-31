@@ -1,9 +1,5 @@
 package model
 
-import (
-	"strings"
-)
-
 type UserModel interface {
 	AddUser(user User)
 	GetUserByName(name string) User
@@ -29,7 +25,7 @@ var userDB = UserDB{Database: Database{schema: "User"}}
 
 func (m *UserDB) GetUserByName(name string) User {
 	for _, item := range m.Data {
-		if strings.ToLower(item.Name) == strings.ToLower(name) {
+		if item.Name == name {
 			return item
 		}
 	}
@@ -44,7 +40,7 @@ func (m *UserDB) AddUser(user User) {
 func (m *UserDB) SetUser(name, password, salt string, setPassword bool, email string, setEmail bool, telephone string, setTel bool) {
 	m.isDirty = true
 	for index, item := range m.Data {
-		if strings.ToLower(item.Name) == strings.ToLower(name) {
+		if item.Name == name {
 			if setPassword {
 				m.Data[index].Password = password
 				m.Data[index].Salt = salt

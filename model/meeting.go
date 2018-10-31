@@ -8,8 +8,9 @@ import (
 type MeetingModel interface {
 	GetMeetingByTitle(title string) Meeting
 	GetMeetingsByUser(user string) []Meeting
-	GetOccupiedParticipators(startTime, endTime time.Time) map[string]bool
+	GetOccupiedParticipators(title string, startTime, endTime time.Time) map[string]bool
 	CreateMeeting(meeting Meeting)
+  SetMeeting(title string, startTime time.Time, setStart bool, endTime time.Time, setEnd bool, participators []string, setPars bool)
 	DeleteMeetingByTitle(title string) bool
 	DeleteMeetingsByInitiator(name string) int
 	QuitMeeting(title, user string) bool
@@ -58,10 +59,10 @@ func (m *MeetingDB) GetMeetingsByUser(user string) (res []Meeting) {
 	return
 }
 
-func (m *MeetingDB) GetOccupiedParticipators(startTime, endTime time.Time) map[string]bool {
+func (m *MeetingDB) GetOccupiedParticipators(title string, startTime, endTime time.Time) map[string]bool{
 	occupiedParticipators := make(map[string]bool)
 	for _, item := range m.Data {
-		if item.EndTime.After(startTime) && item.StartTime.Before(endTime) {
+		if item.Title != title && item.EndTime.After(startTime) && item.StartTime.Before(endTime) {
 			occupiedParticipators[item.Initiator] = true
 			for _, participator := range item.Participators {
 				occupiedParticipators[participator] = true
@@ -76,6 +77,25 @@ func (m *MeetingDB) CreateMeeting(meeting Meeting) {
 	m.Data = append(m.Data, meeting)
 }
 
+func (m *MeetingDB) SetMeeting(title string, startTime time.Time, setStart bool,
+	endTime time.Time, setEnd bool, participators []string, setPars bool) {
+	m.isDirty = true
+	for index, item := range m.Data {
+		if item.Title == title {
+			if setStart {
+				m.Data[index].StartTime = startTime
+			}
+			if setEnd {
+				m.Data[index].EndTime = endTime
+			}
+			if setPars {
+				m.Data[index].Participators = participators
+			}
+			return
+		}
+	}
+}
+  
 func (m *MeetingDB) DeleteMeetingByTitle(title string) bool {
 	m.isDirty = true
 	for i := 0; i < len(m.Data); i++ {
