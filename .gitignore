@@ -9,6 +9,9 @@
 *.test
 test/result/*.json
 
+# Binary
+agenda
+
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 

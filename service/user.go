@@ -34,6 +34,19 @@ func (s *Service) DeleteUser(name string, password string) error {
 		return errors.New("invalid user name or password")
 	}
 	s.DB.User().DeleteUser(name)
+	count := s.DB.Meeting().DeleteMeetingsByInitiator(name)
+	meetings := s.DB.Meeting().GetMeetingsByUser(name)
+	for _, item := range meetings {
+		if s.DB.Meeting().QuitMeeting(item.Title, name) {
+			count++
+			if len(item.Participators)-1 == 0 {
+				s.DB.Meeting().DeleteMeetingByTitle(item.Title)
+			}
+		}
+	}
+	if count != 0 {
+		return errors.New("delete_meeting_or_quit_meeting")
+	}
 	return nil
 }
 

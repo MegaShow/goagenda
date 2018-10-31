@@ -97,31 +97,31 @@ func TestService_CreateMeeting(t *testing.T) {
 		t.FailNow()
 	}
 
-	err = c.call_m_c(s, "me1", "2018-10-26/09:00", "2018-10-26/11:00", "Amy", []string{"Bob","Cici"})
+	err = c.call_m_c(s, "me1", "2018-10-26/09:00", "2018-10-26/11:00", "Amy", []string{"Bob", "Cici"})
 	if err != nil {
 		t.Error("Error: err = " + err.Error())
 		t.FailNow()
 	}
 
-	err = c.call_m_c(s, "me1", "2018-10-26/13:00","2018-10-26/15:00", "Amy", []string{"Bob","Cici"})
+	err = c.call_m_c(s, "me1", "2018-10-26/13:00", "2018-10-26/15:00", "Amy", []string{"Bob", "Cici"})
 	if err.Error() != "title already exists" {
 		t.Error("Info: err != \"title already exists\", err = " + err.Error())
 		t.FailNow()
 	}
 
-	err = c.call_m_c(s, "me2", "2018-10-26/08:00", "2018-10-26/9:30", "Amy", []string{"Bob","Duke"})
+	err = c.call_m_c(s, "me2", "2018-10-26/08:00", "2018-10-26/9:30", "Amy", []string{"Bob", "Duke"})
 	if err.Error() != "user 'Bob' is occupied during the time" {
 		t.Error("Info: err != \"user 'Bob' is occupied during the time\", err = " + err.Error())
 		t.FailNow()
 	}
 
-	err = c.call_m_c(s, "me2", "2018-10-26/08:00" ,"2018-10-26/9:00", "Amy", []string{"Bob","Duke","Duke","Amy"})
+	err = c.call_m_c(s, "me2", "2018-10-26/08:00", "2018-10-26/9:00", "Amy", []string{"Bob", "Duke", "Duke", "Amy"})
 	if err != nil {
 		t.Error("Error: err = " + err.Error())
 		t.FailNow()
 	}
 
-	err = c.call_m_c(s, "me3", "2018-10-26/10:5", "2018-10-26/12:00", "Duke", []string{"Amy","Ella"})
+	err = c.call_m_c(s, "me3", "2018-10-26/10:5", "2018-10-26/12:00", "Duke", []string{"Amy", "Ella"})
 	if err.Error() != "user 'Amy' is occupied during the time" {
 		t.Error("Info: err != \"user 'Amy' is occupied during the time\", err = " + err.Error())
 		t.FailNow()
@@ -133,13 +133,13 @@ func TestService_CreateMeeting(t *testing.T) {
 		t.FailNow()
 	}
 
-	err = c.call_m_c(s, "me3",  "2018-10-27/16:00" ,"2018-10-27/17:00", "Duke", []string{"Cici","Ella"})
+	err = c.call_m_c(s, "me3", "2018-10-27/16:00", "2018-10-27/17:00", "Duke", []string{"Cici", "Ella"})
 	if err != nil {
 		t.Error("Error: err = " + err.Error())
 		t.FailNow()
 	}
 
-	err = c.call_m_c(s, "me4", "2018-10-26/9:30" ,"2018-10-26/10:30","Duke", []string{"Ella"})
+	err = c.call_m_c(s, "me4", "2018-10-26/9:30", "2018-10-26/10:30", "Duke", []string{"Ella"})
 	if err != nil {
 		t.Error("Error: err = " + err.Error())
 		t.FailNow()
