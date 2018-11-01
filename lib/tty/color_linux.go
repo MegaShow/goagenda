@@ -5,6 +5,6 @@ import (
 	"github.com/logrusorgru/aurora"
 )
 
-func printlnErrorUnix(msg string) {
+func printlnErrorLinux(msg string) {
 	fmt.Println(aurora.Red(msg))
 }
