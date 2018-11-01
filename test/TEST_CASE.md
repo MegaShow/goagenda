@@ -1,11 +1,15 @@
 # 测试样例
 
-我们建议这样进行测试：
+建议这样进行测试：
 
-- 使用 `go install` 来安装Agenda，将 `$GOPATH/bin` 下生成的 `goagenda.exe` 重命名为 `agenda.exe`
+- 使用 `go install` 或 `go get` 安装Agenda后，将 `$GOPATH/bin` 下生成的 `goagenda.exe` 重命名为 `agenda.exe`
 
-- 在进行每次测试前，使用 `rm ~/.agenda/data/*` 来清除数据文件
+- 在进行每次测试前，清除数据文件，在类Unix终端或Windows Powershell下，可以使用 `rm ~/.agenda/data/*` 
 - 测试完后，`rm -r ~/.agenda` 清除配置文件
+
+请注意：
+
+- 下面部分测试例子使用了空字符串 `""` ，而Windows Powershell并不识别 `""` 
 
 ## Register
 
@@ -16,6 +20,8 @@
 ### 测试例子
 
 ```sh
+agenda register -u "@" -p 123456
+agenda register -u Amy -p 123
 agenda register -u Amy -p 123456
 agenda register -u Amy -p 123456
 ```
@@ -23,6 +29,12 @@ agenda register -u Amy -p 123456
 ### 测试结果
 
 ```sh
+agenda register -u "@" -p 123456
+# 失败，用户名含有非法字符
+
+agenda register -u Amy -p 123
+# 失败，密码过短
+
 agenda register -u Amy -p 123456
 
 agenda register -u Amy -p 123456
@@ -44,9 +56,11 @@ agenda register -u Amy -p 123456
 ```sh
 agenda register -u Amy -p 123456
 agenda register -u Bob -p 654321
-agenda login -u Amy -p 1234
-agenda login -u Am -p 123456
+agenda login -u Amy -p 12345678
+agenda login -u AA -p 123456
 agenda login -u Amy -p 123456
+agenda login -u Amy -p 123456
+agenda login -u Bob -p 654321
 agenda logout
 ```
 
@@ -57,7 +71,7 @@ agenda register -u Amy -p 123456
 
 agenda register -u Bob -p 654321
 
-agenda login -u Amy -p 1234
+agenda login -u Amy -p 12345678
 # 失败，密码错误
 
 agenda login -u AA -p 123456
@@ -66,10 +80,10 @@ agenda login -u AA -p 123456
 agenda login -u Amy -p 123456
 
 agenda login -u Amy -p 123456
-# 失败，Amy已登录
+# 失败，该用户已登录
 
 agenda login -u Bob -p 654321
-# 失败，Amy已登录
+# 失败，当前已有登录用户Amy
 
 agenda logout
 ```
@@ -95,7 +109,7 @@ agenda logout
 agenda register -u Amy -p 123456
 
 agenda logout
-# 失败
+# 失败，没有登录的用户
 
 agenda login -u Amy -p 123456
 
@@ -204,6 +218,7 @@ agenda u list
 agenda logout
 
 agenda login -u Amy -p 123abc
+# 测试新密码是否生效
 
 agenda logout
 ```
@@ -290,7 +305,7 @@ agenda u d -u Cici -p 123456
 agenda login -u Amy -p 123456
 
 agenda u d -u Amy -p 123456
-# 成功，删除me3
+# 成功，删除me2
 ```
 
 ## Meeting/Create
