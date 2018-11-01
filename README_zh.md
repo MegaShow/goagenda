@@ -15,13 +15,13 @@ Agenda是一个基于命令行的会议管理系统。
 安装agenda。
 
 ```sh
-$ go install github.com/MegaShow/goagenda
+$ go get -u -v github.com/MegaShow/goagenda
 ```
 
 创建软链接。
 
 ```sh
-$ ln -S /usr/bin/agenda $GOPATH/bin/goagenda
+$ ln -s $GOPATH/bin/goagenda /usr/bin/agenda
 ```
 
 或者重命名二进制文件。
