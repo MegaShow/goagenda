@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"github.com/MegaShow/goagenda/lib/log"
-	"github.com/logrusorgru/aurora"
+	"github.com/MegaShow/goagenda/lib/tty"
 	"github.com/spf13/viper"
 	"os"
 )
@@ -83,12 +83,12 @@ func (c *Controller) GetStatus() {
 func (c *Controller) Log() {
 	isOpen := viper.GetBool("Log.IsOpen")
 	if isOpen {
-		fmt.Println(aurora.Red("warning!!!"))
+		tty.ColorfulError("warning!!!")
 		fmt.Println("you are trying to access the log file")
 		fmt.Println("if you don't want that everyone can access log file, please set 'false' in the config file")
 		fmt.Println()
 	} else {
-		fmt.Println(aurora.Red("permission denied"))
+		tty.ColorfulError("permission denied")
 		return
 	}
 	fmt.Println("print only 10 lines, more in file")

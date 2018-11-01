@@ -2,7 +2,7 @@ package log
 
 import (
 	"fmt"
-	"github.com/logrusorgru/aurora"
+	"github.com/MegaShow/goagenda/lib/tty"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"os"
@@ -28,7 +28,7 @@ func Info(msg string) {
 
 // log error message and exit with status 1
 func Error(msg string) {
-	fmt.Println(aurora.Red(msg))
+	tty.ColorfulError(msg)
 	log.Errorln(msg)
 	Release()
 	os.Exit(1)

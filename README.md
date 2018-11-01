@@ -15,7 +15,7 @@ Agenda is a meeting management system.
 Install agenda.
 
 ```sh
-$ go install github.com/MegaShow/goagenda
+$ go get -u -v github.com/MegaShow/goagenda
 ```
 
 Create soft link.
@@ -91,6 +91,7 @@ $ agenda user set [-p <password>] [-e <email>] [-t <telephone>]
 - You can use `s` as an alias for `set`.
 - The password cannot be empty.
 - The email address and telephone can be set empty. Please input  `-e ""` or `-t ""` to indicate it.
+  - Windows Powershell doesn't recognize `""` . 
 
 ### Delete user
 
