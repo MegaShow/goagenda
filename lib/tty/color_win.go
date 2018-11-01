@@ -78,7 +78,7 @@ func changeColor(c color) {
 	setConsoleTextAttribute(hStdout, attr)
 }
 
-func printlnErrorWin(msg string) {
+func printlnError(msg string) {
 	changeColor(Red)
 	fmt.Println(msg)
 	resetColor()
