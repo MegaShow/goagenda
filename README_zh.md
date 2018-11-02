@@ -1,6 +1,6 @@
 # Go Agenda
 
-Agenda是一个基于命令行的会议管理系统。
+Agenda是一个基于命令行的会议管理系统。兼容Linux与Windows环境。
 
 [![Build Status](https://travis-ci.org/MegaShow/goagenda.svg?branch=master)](https://travis-ci.org/MegaShow/goagenda)
 [![Coverage Status](https://coveralls.io/repos/github/MegaShow/goagenda/badge.svg)](https://coveralls.io/github/MegaShow/goagenda)
@@ -91,6 +91,7 @@ $ agenda user set [-p <password>] [-e <email>] [-t <telephone>]
 - 你可以使用`s`代替`set`。
 - 密码不能为空。
 - 邮件地址和电话可以设为空。请输入 `-e ""` 或 `-t ""` 以表示置空。
+  - Windows Powershell不识别 `""` 。
 
 ### 删除用户
 
@@ -104,7 +105,7 @@ $ agenda user delete -u <user> -p <password>
 - 你发起的会议将被删除，你参与的会议将会从与会者列表中移除你。
 - 如果你退出会议之后，该会议的参与人数为0，那该会议将被删除。
 
-### 显示所有用户
+### 查询用户
 
 ```
 $ agenda user list [-u <user>]
@@ -121,8 +122,9 @@ $ agenda meeting create -t <title> -s <startTime> -e <endTime> -p <participators
 
 - 你可以使用 `meet` 或 `m` 代替 `meeting` 。
 - 你可以使用 `c` 代替 `create` 。
-- 如果你想添加多个与会者，请像这样输入：`-p p1,p2,...,pN` 。
 - 你可以这样输入时间： `YYYY-MM-DD/hh:mm` 或 `YYYY-M-D/h:m` ，使用24小时制。
+- 如果你想添加多个与会者，请像这样输入：`-p p1,p2,...,pN` 。
+- 如果你添加的某个与会者不存在，操作将被取消。
 
 ### 修改会议信息
 
@@ -131,6 +133,7 @@ $ agenda meeting set -t <title> [-s <startTime>] [-e <endTime>] [-p <participato
 ```
 
 - 你可以使用 `s` 代替 `set` 。
+- 你必须是这个会议的发起人。
 
 ### 添加与会者
 
