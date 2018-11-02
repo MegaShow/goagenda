@@ -1,6 +1,6 @@
 # Go Agenda
 
-Agenda is a meeting management system.
+Agenda is a meeting management system. It works with Linux and Windows.
 
 [![Build Status](https://travis-ci.org/MegaShow/goagenda.svg?branch=master)](https://travis-ci.org/MegaShow/goagenda)
 [![Coverage Status](https://coveralls.io/repos/github/MegaShow/goagenda/badge.svg)](https://coveralls.io/github/MegaShow/goagenda)
@@ -123,8 +123,9 @@ $ agenda meeting create -t <title> -s <startTime> -e <endTime> -p <participators
 
 - You can use `meet` or `m` as aliases for `meeting`.
 - You can use `c` as an alias for `create`.
-- If you want to add more than one participator, please input like `-p p1,p2,...,pN` .
 - Input time like `YYYY-MM-DD/hh:mm` or `YYYY-M-D/h:m` , using 24-hour.
+- If you want to add more than one participator, please input like `-p p1,p2,...,pN` .
+- If you add some participator who doesn't exist, the operation will be cancelled.
 
 ### Set information of meeting
 
@@ -133,6 +134,7 @@ $ agenda meeting set -t <title> [-s <startTime>] [-e <endTime>] [-p <participato
 ```
 
 - You can use `s` as an alias for `set`.
+- You must be the initiator of this meeting.
 
 ### Add participators
 
