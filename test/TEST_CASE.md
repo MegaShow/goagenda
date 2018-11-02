@@ -225,6 +225,52 @@ agenda logout
 
 ## User/List
 
+controller/meeting**
+
+- 要检测是否登录
+- 要检测用户名是否合法
+
+**service/meeting**
+
+- 如果有指定用户，要检测用户是否存在
+
+### 测试命令
+
+```sh
+agenda register -u Amy -p 123456
+agenda r -u Bob -p 654321
+agenda r -u Cici -p 123456
+agenda r -u Duke -p 654321
+agenda r -u Ella -p 123456
+agenda user list
+agenda login -u Amy -p 123456
+agenda user list
+agenda user list -u Amy
+agenda user list -u amy
+```
+
+### 测试结果
+
+```sh
+agenda register -u Amy -p 123456
+agenda r -u Bob -p 654321
+agenda r -u Cici -p 123456
+agenda r -u Duke -p 654321
+agenda r -u Ella -p 123456
+agenda user list
+# 失败，未登录
+
+agenda login -u Amy -p 123456
+agenda user list
+# 成功，列出所有用户信息
+
+agenda user list -u Amy
+# 成功，列出Amy信息
+
+agenda user list -u amy
+# 失败，找不到该用户
+```
+
 ## User/Delete
 
 **controller/user**
@@ -598,23 +644,83 @@ agenda m s -t me3 -s 2018-11-1/6:00
 agenda m s -t me3 -p Amy,Ella,Duke,Bob
 # 成功
 # me1 2018-11-1/09:30 2018-11-1/11:30 Amy Bob,Ella
-# me2 2018-11-1/08:00 2018-11-1/09:00 Amy Bob,Frank
-# me3 2018-11-1/06:00 2018-11-1/07:45 Cici Amy,Bob,Duke,Ella
-
-agenda m c -t me4 -s 2018-11-1/10:00 -e 2018-11-1/10:30 -p Frank
-# 创建会议me4
-# me1 2018-11-1/09:30 2018-11-1/11:30 Amy Bob,Ella
-# me2 2018-11-1/08:00 2018-11-1/09:00 Amy Bob,Frank
-# me3 2018-11-1/06:00 2018-11-1/07:45 Cici Amy,Bob,Duke,Ella
-# me4 2018-11-1/10:00 2018-11-1/10:30 Cici Frank
-
-agenda m s -t me4 -s 2018-11-1/7:00 -e 2018-11-1/7:30
-# 失败，因为当前用户Cici有重叠的会议me3
-
-agenda logout
 ```
 
 ## Meeting/Add
+
+**controller/meeting**
+
+- 要检测是否登录
+- 要检测议题是否合法
+
+**service/meeting**
+
+- 要检测会议是否存在
+- 要检测当前用户是否为会议发起者
+- 要检测用户列表是否合法
+
+### 测试命令
+
+```sh
+agenda register -u Amy -p 123456
+agenda r -u Bob -p 654321
+agenda r -u Cici -p 123456
+agenda r -u Duke -p 654321
+agenda r -u Ella -p 123456
+agenda login -u Amy -p 123456
+agenda m c -t me1 -s 2018-10-26/09:00 -e 2018-10-26/11:00 -p Bob,Cici,Ella
+agenda logout
+agenda m remove -t me1 Bob
+agenda login -u Bob -p 654321
+agenda m r -t me1 Bob
+agenda logout
+agenda login -u Amy -p 123456
+agenda m r -t me2 Bob
+agenda m r -t me1 Bob Duke
+agenda m r -t me1 Bob Frank
+agenda m r -t me1 Bob Ella
+agenda m r -t me1 Cici
+```
+
+### 测试结果
+
+```sh
+.agenda register -u Amy -p 123456
+agenda r -u Bob -p 654321
+agenda r -u Cici -p 123456
+agenda r -u Duke -p 654321
+agenda r -u Ella -p 123456
+agenda login -u Amy -p 123456
+agenda m c -t me1 -s 2018-10-26/09:00 -e 2018-10-26/11:00 -p Bob,Cici,Ella
+agenda logout
+
+agenda m remove -t me1 Bob
+# 失败，未登录
+
+agenda login -u Bob -p 654321
+
+agenda m r -t me1 Bob
+# 失败，不是发起者
+
+agenda logout
+agenda login -u Amy -p 123456
+
+agenda m r -t me2 Bob
+# 失败，会议不存在
+
+agenda m r -t me1 Bob Duke
+# 失败，Duke不是与会者
+
+agenda m r -t me1 Bob Frank
+# 失败，Frank不存在
+
+agenda m r -t me1 Bob Ella
+# 成功
+
+agenda m r -t me1 Cici
+# 成功，并删除会议
+```
+
 
 ## Meeting/Remove
 

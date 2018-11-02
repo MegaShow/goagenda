@@ -21,7 +21,7 @@ $ go get -u -v github.com/MegaShow/goagenda
 Create soft link.
 
 ```sh
-$ ln -S /usr/bin/agenda $GOPATH/bin/goagenda
+$ ln -s $GOPATH/bin/goagenda /usr/bin/agenda
 ```
 
 Or rename the binary file.
